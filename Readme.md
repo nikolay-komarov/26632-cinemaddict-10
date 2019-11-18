@@ -1,7 +1,7 @@
 # Личный проект «Киноман» [![Build status][travis-image]][travis-url]
 
 * Студент: [Николай Комаров](https://up.htmlacademy.ru/ecmascript/10/user/26632).
-* Наставник: `Неизвестно`.
+* Наставник: [Александр Белокур] (https://htmlacademy.ru/profile/alex-belokur).
 
 ---
 
