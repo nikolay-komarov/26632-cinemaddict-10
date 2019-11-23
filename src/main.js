@@ -81,7 +81,7 @@ const createFilmCardTemplate = () => {
   );
 };
 
-const createLoadMoreButton = () => {
+const createLoadMoreButtonTemplate = () => {
   return (
     `<button class="films-list__show-more">Show more</button>`
   );
@@ -282,7 +282,7 @@ new Array(FILM_COUNT)
       () => render(filmsListConteiner, createFilmCardTemplate(), `beforeend`)
   );
 
-render(filmsListElement, createLoadMoreButton(), `beforeend`);
+render(filmsListElement, createLoadMoreButtonTemplate(), `beforeend`);
 
 
 render(filmsElement, createTopRatedFilmsElementTemplate(), `beforeend`);
