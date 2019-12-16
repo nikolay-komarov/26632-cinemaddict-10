@@ -11,8 +11,7 @@ import {generateHeaderProfile} from './mock/header-profile';
 
 import {generateFilmCards} from './mock/film-card.js';
 
-import {FILM_COUNT} from './const';
-import {FILM_IN_EXTRA_COUNT} from './const';
+import {FILM_COUNT, FILM_IN_EXTRA_COUNT} from './const';
 import {generateFilters} from './mock/menu-elements.js';
 
 const SHOWING_FILM_CARDS_COUNT_ON_START = 5;

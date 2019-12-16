@@ -1,5 +1,4 @@
-import {FILM_YEAR_MIN} from './const.js';
-import {FILM_YEAR_MAX} from './const.js';
+import {FILM_YEAR_MIN, FILM_YEAR_MAX} from './const.js';
 
 export const getRandomArrayItem = (array) => {
   const randomIndex = getRandomIntegerNumber(0, array.length - 1);

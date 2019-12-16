@@ -2,9 +2,6 @@ import {getRandomArrayItem} from '../utils.js';
 import {getRandomIntegerNumber} from '../utils.js';
 import {getRandomDate} from '../utils';
 
-// import {FILM_YEAR_MIN} from '../const.js';
-// import {FILM_YEAR_MAX} from '../const.js';
-
 const FILM_TITLES = [
   `made-for-each-other`,
   `popeye-meets-sinbad`,
@@ -168,17 +165,6 @@ const generateFilmCard = () => {
     releaseDate,
     country: getRandomArrayItem(COUNTRIES),
   };
-
-  // return {
-  //   title: getRandomArrayItem(filmTitiles),
-  //   rating: getRandomIntegerNumber(FILM_RATING_MIN, FILM_RATING_MAX * 10) / 10,
-  //   year: getRandomIntegerNumber(FILM_YEAR_MIN, FILM_YEAR_MAX),
-  //   duration: getFilmDuration(),
-  //   genre: getRandomArrayItem(filmGanres),
-  //   poster: filmPostersPath + getRandomArrayItem(filmPosters),
-  //   description: getFilmDescription(),
-  //   commentsCount: getRandomIntegerNumber(FILM_COMMENTS_COUNT_MIN, FILM_COMMENTS_COUNT_MAX),
-  // };
 };
 
 const generateFilmCards = (count) => {

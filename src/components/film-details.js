@@ -36,7 +36,6 @@ export const createFilmDetailsTemplate = (card) => {
     title,
     titleOriginal,
     rating,
-    // year,
     duration,
     genres,
     poster,
