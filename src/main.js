@@ -1,12 +1,3 @@
-// import {createHesaderProfileTemplate} from './components/header-profile.js';
-// import {createMenuElementsTemplate} from './components/menu-elements.js';
-// import {createFilmsElementTemplate} from './components/films-element.js';
-// import {createTopRatedFilmsElementTemplate} from './components/top-rated-films-element.js';
-// import {createMostCommentedFilmsElementTemplate} from './components/most-commented-film-element.js';
-// import {createFilmCardTemplate} from './components/film-card.js';
-// import {createLoadMoreButtonTemplate} from './components/load-more-button.js';
-// import {createFilmDetailsTemplate} from './components/film-details.js';
-
 import HeaderProfileComponent from './components/header-profile.js';
 import MenuElementsComponent from './components/menu-elements.js';
 import SortComponent from './components/sort.js';
@@ -32,16 +23,19 @@ const renderFilm = (filmList, filmCard) => {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
 
     if (isEscKey) {
-      closeFilmdetails();
+      closeFilmDetails();
       document.removeEventListener(`keydown`, onEscKeyDown);
     }
   };
 
   const showFilmDetails = () => {
     render(filmList, filmDetailsComponent.getElement(), RenderPosition.BEFOREEND);
+    filmDetailsComponent.getElement().style.zIndex = 100;
+    const filmDetailsCloseButton = filmDetailsComponent.getElement().querySelector(`.film-details__close-btn`);
+    filmDetailsCloseButton.addEventListener(`click`, closeFilmDetails);
   };
-  const closeFilmdetails = () => {
-    filmDetailsCloseButton.removeEventListener(`click`, closeFilmdetails);
+  const closeFilmDetails = () => {
+    filmDetailsCloseButton.removeEventListener(`click`, closeFilmDetails);
     filmDetailsComponent.getElement().remove();
     filmDetailsComponent.removeElement();
   };
@@ -66,7 +60,6 @@ const renderFilm = (filmList, filmCard) => {
 
   const filmDetailsComponent = new FilmDetailsComponent(filmCard);
   const filmDetailsCloseButton = filmDetailsComponent.getElement().querySelector(`.film-details__close-btn`);
-  filmDetailsCloseButton.addEventListener(`click`, closeFilmdetails);
 
   render(filmList, filmCardComponent.getElement(), RenderPosition.BEFOREEND);
 };
@@ -140,9 +133,3 @@ if (mostCommentedCards[FILM_IN_EXTRA_COUNT - 1].commentsCount !== 0) {
 const siteFooterElement = document.querySelector(`.footer`);
 const siteFooterFilmCount = siteFooterElement.querySelector(`.footer__statistics`);
 siteFooterFilmCount.querySelector(`p`).textContent = filmCards.length + ` movies inside`;
-
-// render(siteFooterElement, new FilmDetailsComponent(filmCards[0]).getElement(), RenderPosition.BEFOREEND);
-
-// скроем попап
-// document.querySelector(`.film-details`).classList.add(`visually-hidden`);
-
