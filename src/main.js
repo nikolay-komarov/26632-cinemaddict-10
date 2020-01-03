@@ -18,6 +18,8 @@ import {render, RenderPosition} from './utils.js';
 const SHOWING_FILM_CARDS_COUNT_ON_START = 5;
 const SHOWING_FILM_CARDS_COUNT_BY_BUTTON = 5;
 
+const siteBody = document.querySelector(`body`);
+
 const renderFilm = (filmList, filmCard) => {
   const onEscKeyDown = (evt) => {
     const isEscKey = evt.key === `Escape` || evt.key === `Esc`;
@@ -29,8 +31,7 @@ const renderFilm = (filmList, filmCard) => {
   };
 
   const showFilmDetails = () => {
-    render(filmList, filmDetailsComponent.getElement(), RenderPosition.BEFOREEND);
-    filmDetailsComponent.getElement().style.zIndex = 100;
+    render(siteBody, filmDetailsComponent.getElement(), RenderPosition.BEFOREEND); // рендерим карточку с детальной информацией по фильму в body
     const filmDetailsCloseButton = filmDetailsComponent.getElement().querySelector(`.film-details__close-btn`);
     filmDetailsCloseButton.addEventListener(`click`, closeFilmDetails);
   };
