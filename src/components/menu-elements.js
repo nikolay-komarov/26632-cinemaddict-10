@@ -1,3 +1,5 @@
+import {createElement} from '../utils';
+
 const createFilterMarkup = (filter) => {
   const {title, count} = filter;
   return (
@@ -5,7 +7,7 @@ const createFilterMarkup = (filter) => {
   );
 };
 
-export const createMenuElementsTemplate = (filters) => {
+const createMenuElementsTemplate = (filters) => {
   const filtersMarkup = filters.map((it, i) => createFilterMarkup(it, i === 0)).join(`\n`);
 
   return (
@@ -22,3 +24,26 @@ export const createMenuElementsTemplate = (filters) => {
     </ul>`
   );
 };
+
+export default class MenuElements {
+  constructor(filters) {
+    this._filters = filters;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createMenuElementsTemplate(this._filters);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,4 +1,5 @@
 import {MONTH_NAMES} from '../const.js';
+import {createElement} from '../utils';
 
 const createCommentMarkup = (comments) => {
   return comments.map((it) => {
@@ -31,7 +32,7 @@ const createGanresList = (genres) => {
   .join(`\n`);
 };
 
-export const createFilmDetailsTemplate = (card) => {
+const createFilmDetailsTemplate = (card) => {
   const {
     title,
     titleOriginal,
@@ -173,3 +174,26 @@ export const createFilmDetailsTemplate = (card) => {
     </section>`
   );
 };
+
+export default class FilmDetails {
+  constructor(card) {
+    this._card = card;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmDetailsTemplate(this._card);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
