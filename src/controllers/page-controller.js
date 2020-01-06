@@ -64,7 +64,6 @@ export default class PageController {
     this._sortComponent = new SortComponent();
     this._noFilmsComponent = new NoFilmsComponent();
     this._filmsList = new FilmsListComponent();
-    // this._filmsElementComponent = new FilmsElementComponent();
     this._filmsListContainer = new FilmsListContainerComponent();
     this._showMoreButtonComponent = new ShowMoreButtonComponent();
     this._mostCommentedFilmsComponent = new FilmsListExtraComponent(`Most Commented`);
@@ -74,8 +73,8 @@ export default class PageController {
   }
 
   render(filmCards) {
-    const renderShowMoreButton = () => {
-      if (showingFilmCardsCount >= filmCards.length) {
+    const renderShowMoreButton = (showingFilmCards) => {
+      if (showingFilmCardsCount >= showingFilmCards.length) {
         return;
       } else {
         render(filmsList, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
@@ -83,9 +82,9 @@ export default class PageController {
           const prevFilmsCount = showingFilmCardsCount;
           showingFilmCardsCount = showingFilmCardsCount + SHOWING_FILM_CARDS_COUNT_BY_BUTTON;
 
-          renderFilms(filmsListContainer, filmCards.slice(prevFilmsCount, showingFilmCardsCount));
+          renderFilms(filmsListContainer, showingFilmCards.slice(prevFilmsCount, showingFilmCardsCount));
 
-          if (showingFilmCardsCount >= filmCards.length) {
+          if (showingFilmCardsCount >= showingFilmCards.length) {
             remove(this._showMoreButtonComponent);
           }
         });
@@ -107,7 +106,7 @@ export default class PageController {
       render(container, this._filmsList, RenderPosition.BEFOREEND);
       render(filmsList, this._filmsListContainer, RenderPosition.BEFOREEND);
       renderFilms(filmsListContainer, filmCards.slice(0, showingFilmCardsCount));
-      renderShowMoreButton();
+      renderShowMoreButton(filmCards);
 
       this._sortComponent.setSortTypeChangeHandler((sortType) => {
         let sortedFilms = [];
@@ -125,13 +124,8 @@ export default class PageController {
         }
 
         filmsListContainer.innerHTML = ``;
-        renderFilms(filmsListContainer, sortedFilms);
-
-        if (sortType === SortType.DEFAULT) {
-          renderShowMoreButton();
-        } else {
-          remove(this._showMoreButtonComponent);
-        }
+        renderFilms(filmsListContainer, sortedFilms.slice(0, showingFilmCardsCount));
+        renderShowMoreButton(sortedFilms);
       });
 
       // TopRated, MostCommented

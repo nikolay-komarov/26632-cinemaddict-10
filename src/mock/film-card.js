@@ -1,6 +1,4 @@
-import {getRandomArrayItem} from '../utils/common.js';
-import {getRandomIntegerNumber} from '../utils/common.js';
-import {getRandomDate} from '../utils/common.js';
+import {getRandomArrayItem, getRandomIntegerNumber, getRandomDate} from '../utils/common.js';
 
 const FILM_TITLES = [
   `made-for-each-other`,
