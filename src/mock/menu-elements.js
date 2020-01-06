@@ -1,5 +1,5 @@
-import {FILM_COUNT} from '../const.js';
-import {getRandomIntegerNumber} from '../utils.js';
+import {FILM_COUNT} from '../utils/const.js';
+import {getRandomIntegerNumber} from '../utils/common.js';
 
 const filterNames = [
   `Watchlist`,

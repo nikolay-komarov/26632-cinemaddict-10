@@ -1,6 +1,6 @@
-import {getRandomArrayItem} from '../utils.js';
-import {getRandomIntegerNumber} from '../utils.js';
-import {getRandomDate} from '../utils';
+import {getRandomArrayItem} from '../utils/common.js';
+import {getRandomIntegerNumber} from '../utils/common.js';
+import {getRandomDate} from '../utils/common.js';
 
 const FILM_TITLES = [
   `made-for-each-other`,
@@ -65,7 +65,7 @@ const FILM_POSTERS = [
 
 const COUNT_SENTENCE_MIN = 1;
 const COUNT_SENTENCE_MAX = 3;
-const FILM_DECRIPTION_TEMPLE = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
+const FILM_DECRIPTION_TEMPLE = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus`;
 const filmDescriptionArray = FILM_DECRIPTION_TEMPLE.split(`.`);
 
 const getFilmDescription = () => {
