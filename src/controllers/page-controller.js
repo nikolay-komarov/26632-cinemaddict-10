@@ -123,7 +123,10 @@ export default class PageController {
             break;
         }
 
+        showingFilmCardsCount = SHOWING_FILM_CARDS_COUNT_ON_START;
         filmsListContainer.innerHTML = ``;
+        remove(this._showMoreButtonComponent);
+
         renderFilms(filmsListContainer, sortedFilms.slice(0, showingFilmCardsCount));
         renderShowMoreButton(sortedFilms);
       });
