@@ -1,5 +1,5 @@
-import {MONTH_NAMES} from '../const.js';
-import {createElement} from '../utils';
+import {MONTH_NAMES} from '../utils/const.js';
+import AbstractComponent from './abstract-component.js';
 
 const createCommentMarkup = (comments) => {
   return comments.map((it) => {
@@ -23,7 +23,7 @@ const createCommentMarkup = (comments) => {
   .join(`\n`);
 };
 
-const createGanresList = (genres) => {
+const createGanresListMarkup = (genres) => {
   return genres.map((it) => {
     return (
       `<span class="film-details__genre">${it}</span>`
@@ -53,7 +53,7 @@ const createFilmDetailsTemplate = (card) => {
 
   const releaseDateTemplate = releaseDate.getDate() + ` ` + MONTH_NAMES[releaseDate.getMonth()] + ` ` + releaseDate.getFullYear();
   const commentsTemplate = createCommentMarkup(comments);
-  const genresListTemplate = createGanresList(genres);
+  const genresListTemplate = createGanresListMarkup(genres);
 
   return (
     `<section class="film-details">
@@ -175,25 +175,18 @@ const createFilmDetailsTemplate = (card) => {
   );
 };
 
-export default class FilmDetails {
+export default class FilmDetails extends AbstractComponent {
   constructor(card) {
+    super();
     this._card = card;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmDetailsTemplate(this._card);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setCloseButtonClickHandler(handler) {
+    this.getElement().querySelector(`.film-details__close-btn`)
+      .addEventListener(`click`, handler);
   }
 }

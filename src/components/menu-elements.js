@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import AbstractComponent from './abstract-component.js';
 
 const createFilterMarkup = (filter) => {
   const {title, count} = filter;
@@ -15,35 +15,17 @@ const createMenuElementsTemplate = (filters) => {
       <a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>
       ${filtersMarkup}
       <a href="#stats" class="main-navigation__item main-navigation__item--additional">Stats</a>
-    </nav>
-
-    <ul class="sort">
-      <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
-      <li><a href="#" class="sort__button">Sort by date</a></li>
-      <li><a href="#" class="sort__button">Sort by rating</a></li>
-    </ul>`
+    </nav>`
   );
 };
 
-export default class MenuElements {
+export default class MenuElements extends AbstractComponent {
   constructor(filters) {
+    super();
     this._filters = filters;
-    this._element = null;
   }
 
   getTemplate() {
     return createMenuElementsTemplate(this._filters);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
