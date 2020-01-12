@@ -1,4 +1,5 @@
 import {getRandomArrayItem, getRandomIntegerNumber, getRandomDate} from '../utils/common.js';
+import {YEAR_SECONDS_COUNT, FILM_RATING_MIN, FILM_RATING_MAX, USER_FILM_RATING_MIN, USER_FILM_RATING_MAX, FILM_COMMENTS_COUNT_MIN, FILM_COMMENTS_COUNT_MAX} from '../utils/const.js';
 
 const FILM_TITLES = [
   `made-for-each-other`,
@@ -9,9 +10,6 @@ const FILM_TITLES = [
   `the-great-flamarion`,
   `the-man-with-the-golden-arm`
 ];
-
-const FILM_RATING_MIN = 0;
-const FILM_RATING_MAX = 10;
 
 const FILM_DURATION_HOUR_MIN = 0;
 const FILM_DURATION_HOUR_MAX = 5;
@@ -76,9 +74,6 @@ const getFilmDescription = () => {
   return filmDescription;
 };
 
-const FILM_COMMENTS_COUNT_MIN = 1;
-const FILM_COMMENTS_COUNT_MAX = 10;
-
 const COMMENTS_EMOJIES = [
   `./images/emoji/smile.png`,
   `./images/emoji/sleeping.png`,
@@ -135,6 +130,28 @@ const generateFilmComments = () => {
     });
 };
 
+const generateWatchedDate = () => {
+  const sign = Math.random() > 0.5 ? 1 : -1;
+  const diffValue = sign * getRandomIntegerNumber(0, YEAR_SECONDS_COUNT);
+
+  return new Date() + diffValue;
+};
+
+const generateUserDetails = () => {
+  const alreadyWatched = Math.random() > 0.5;
+  let personalRating = USER_FILM_RATING_MAX;
+  if (alreadyWatched) {
+    personalRating = getRandomIntegerNumber(USER_FILM_RATING_MIN, USER_FILM_RATING_MAX);
+  }
+  return {
+    personalRating,
+    watchlist: Math.random() > 0.5,
+    alreadyWatched,
+    watchingDate: generateWatchedDate(),
+    favorite: Math.random() > 0.5
+  };
+};
+
 const generateFilmCard = () => {
   const commentsArray = generateFilmComments();
 
@@ -144,6 +161,8 @@ const generateFilmCard = () => {
   const actorsList = `` + getRandomArrayItem(ACTORS);
 
   const releaseDate = getRandomDate();
+
+  const userDetails = generateUserDetails();
 
   return {
     title: filmTitle,
@@ -162,6 +181,7 @@ const generateFilmCard = () => {
     actors: actorsList,
     releaseDate,
     country: getRandomArrayItem(COUNTRIES),
+    userDetails
   };
 };
 
