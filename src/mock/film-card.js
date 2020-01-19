@@ -165,6 +165,7 @@ const generateFilmCard = () => {
   const userDetails = generateUserDetails();
 
   return {
+    id: String(new Date() + Math.random()),
     title: filmTitle,
     titleOriginal: `Original: ` + filmTitle,
     rating: getRandomIntegerNumber(FILM_RATING_MIN, FILM_RATING_MAX * 10) / 10,
