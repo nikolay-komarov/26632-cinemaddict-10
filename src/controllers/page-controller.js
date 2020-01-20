@@ -68,11 +68,11 @@ export default class PageController {
 
       // TopRated, MostCommented
       const getTopRatedFilms = (allFilmCards) => {
-        let ratedArray = allFilmCards;
+        let ratedArray = allFilmCards.slice();
         return ratedArray.sort((a, b) => a.rating > b.rating ? 1 : -1).slice(-1 * FILM_IN_EXTRA_COUNT);
       };
       const getMostCommentedFilms = (allFilmCards) => {
-        let ratedArray = allFilmCards;
+        let ratedArray = allFilmCards.slice();
         return ratedArray.sort((a, b) => a.commentsCount > b.commentsCount ? 1 : -1).slice(-1 * FILM_IN_EXTRA_COUNT);
       };
       const topRatedCards = getTopRatedFilms(films);
@@ -148,12 +148,6 @@ export default class PageController {
     if (isSuccess) {
       movieController.render(newData);
     }
-    // const index = this._films.findIndex((it) => it === oldData);
-    // if (index === -1) {
-    //   return;
-    // }
-    // this._films = [...this._films.slice(0, index), newData, ...this._films.slice(index + 1)];
-    // movieController.render(this._films[index]);
   }
 
   _onViewChange() {

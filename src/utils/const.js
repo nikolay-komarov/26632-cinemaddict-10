@@ -58,3 +58,10 @@ export const EMOJI_ICONS = [
     emojiFile: `./images/emoji/angry.png`
   }
 ];
+
+export const FilterType = {
+  ALL: `All movies`,
+  WATCHLIST: `Watchlist`,
+  HISTORY: `History`,
+  FAVORITES: `Favorites`
+};
