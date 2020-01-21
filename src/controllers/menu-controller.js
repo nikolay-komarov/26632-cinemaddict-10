@@ -10,6 +10,8 @@ export default class MenuController {
 
     this._activeFilterType = FilterType.ALL;
     this._menuComponent = null;
+
+    this._onFilterChange = this._onFilterChange.bind(this);
   }
 
   render() {
@@ -24,6 +26,7 @@ export default class MenuController {
     const oldComponent = this._filterComponent;
 
     this._menuComponent = new MenuComponent(filters);
+    this._menuComponent.setMenuItemChangeHandler(this._onFilterChange);
 
     if (oldComponent) {
       replace(this._menuComponent, oldComponent);
@@ -32,5 +35,10 @@ export default class MenuController {
     }
 
     render(container, this._menuComponent, RenderPosition.BEFOREEND);
+  }
+
+  _onFilterChange(filterType) {
+    this._filmsModel.setFilter(filterType);
+    this._activeFilterType = filterType;
   }
 }

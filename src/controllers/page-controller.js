@@ -25,6 +25,7 @@ export default class PageController {
     this._container = container;
     this._filmsModel = filmsModel;
 
+    this._showedFilmCards = [];
     this._showedFilmControllers = [];
     this._showingFilmCardsCount = SHOWING_FILM_CARDS_COUNT_ON_START;
 
@@ -38,33 +39,32 @@ export default class PageController {
     this._topRatedFilmsComponent = new FilmsListExtraComponent(`Top Rated`);
     this._topRatedFilmsContainerComponent = new FilmsListContainerComponent();
 
-    this._onSortTypeChange = this._onSortTypeChange.bind(this); // ?
+    this._onSortTypeChange = this._onSortTypeChange.bind(this);
     this._onDataChange = this._onDataChange.bind(this);
     this._onViewChange = this._onViewChange.bind(this);
+    this._onFilterChange = this._onFilterChange.bind(this);
 
     this._sortComponent.setSortTypeChangeHandler(this._onSortTypeChange);
+    this._filmsModel.setFilterChangeHandler(this._onFilterChange);
   }
 
   render() {
-    const films = this._filmsModel.getFilms();
+    this._showedFilmCards = this._filmsModel.getFilms();
 
     const container = this._container.getElement();
     render(container, this._sortComponent, RenderPosition.BEFOREBEGIN);
 
     const filmsList = this._filmsList.getElement();
-    const filmsListContainer = this._filmsListContainer.getElement();
 
-    if (films.length === 0) {
+    if (this._showedFilmCards.length === 0) {
       render(container, this._noFilmsComponent, RenderPosition.BEFOREEND);
       return;
     } else {
       render(container, this._filmsList, RenderPosition.BEFOREEND);
       render(filmsList, this._filmsListContainer, RenderPosition.BEFOREEND);
 
-      const newFilms = renderFilms(filmsListContainer, films.slice(0, this._showingFilmCardsCount), this._onDataChange, this._onViewChange);
-      this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
-
-      this._renderShowMoreButton(films);
+      this._renderFilms(this._showedFilmCards.slice(0, this._showingFilmCardsCount));
+      this._renderShowMoreButton();
 
       // TopRated, MostCommented
       const getTopRatedFilms = (allFilmCards) => {
@@ -75,8 +75,8 @@ export default class PageController {
         let ratedArray = allFilmCards.slice();
         return ratedArray.sort((a, b) => a.commentsCount > b.commentsCount ? 1 : -1).slice(-1 * FILM_IN_EXTRA_COUNT);
       };
-      const topRatedCards = getTopRatedFilms(films);
-      const mostCommentedCards = getMostCommentedFilms(films);
+      const topRatedCards = getTopRatedFilms(this._showedFilmCards);
+      const mostCommentedCards = getMostCommentedFilms(this._showedFilmCards);
 
       // первые две карточки -> Top rated
       if (topRatedCards[FILM_IN_EXTRA_COUNT - 1].rating !== 0) {
@@ -98,32 +98,31 @@ export default class PageController {
   }
 
   _onSortTypeChange(sortType) {
-    let sortedFilms = [];
+    this._removeFilms();
     const films = this._filmsModel.getFilms();
     this._showingFilmCardsCount = SHOWING_FILM_CARDS_COUNT_ON_START;
 
     switch (sortType) {
       case SortType.DATE:
-        sortedFilms = films.slice().sort((a, b) => b.releaseDate - a.releaseDate);
+        this._showedFilmCards = films.slice().sort((a, b) => b.releaseDate - a.releaseDate);
         break;
       case SortType.RATING:
-        sortedFilms = films.slice().sort((a, b) => b.rating - a.rating);
+        this._showedFilmCards = films.slice().sort((a, b) => b.rating - a.rating);
         break;
       case SortType.DEFAULT:
-        sortedFilms = films;
+        this._showedFilmCards = films.slice();
         break;
     }
 
-    const filmsListContainer = this._filmsListContainer.getElement();
-    filmsListContainer.innerHTML = ``;
     remove(this._showMoreButtonComponent);
 
-    renderFilms(filmsListContainer, sortedFilms.slice(0, this._showingFilmCardsCount), this._onDataChange, this._onViewChange);
-    this._renderShowMoreButton(sortedFilms);
+    this._renderFilms(this._showedFilmCards.slice(0, this._showingFilmCardsCount));
+    this._renderShowMoreButton();
   }
 
-  _renderShowMoreButton(showingFilmCards) {
-    if (this._showingFilmCardsCount >= showingFilmCards.length) {
+  _renderShowMoreButton() {
+    remove(this._showMoreButtonComponent);
+    if (this._showingFilmCardsCount >= this._showedFilmCards.length) {
       return;
     } else {
       const filmsList = this._filmsList.getElement();
@@ -134,9 +133,8 @@ export default class PageController {
         const prevFilmsCount = this._showingFilmCardsCount;
         this._showingFilmCardsCount = this._showingFilmCardsCount + SHOWING_FILM_CARDS_COUNT_BY_BUTTON;
 
-        renderFilms(filmsListContainer, showingFilmCards.slice(prevFilmsCount, this._showingFilmCardsCount), this._onDataChange, this._onViewChange);
-
-        if (this._showingFilmCardsCount >= showingFilmCards.length) {
+        renderFilms(filmsListContainer, this._showedFilmCards.slice(prevFilmsCount, this._showingFilmCardsCount), this._onDataChange, this._onViewChange);
+        if (this._showingFilmCardsCount >= this._showedFilmCards.length) {
           remove(this._showMoreButtonComponent);
         }
       });
@@ -152,5 +150,27 @@ export default class PageController {
 
   _onViewChange() {
     this._showedFilmControllers.forEach((it) => it.setDefaultView());
+  }
+
+  _removeFilms() {
+    const filmsListContainer = this._filmsListContainer.getElement();
+    filmsListContainer.innerHTML = ``;
+    this._showedFilmControllers = [];
+    this._showedFilmCards = [];
+  }
+
+  _renderFilms(films) {
+    const filmsListContainer = this._filmsListContainer.getElement();
+    const newFilms = renderFilms(filmsListContainer, films, this._onDataChange, this._onViewChange);
+    this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
+    this._showingFilmCardsCount = this._showedFilmControllers.length;
+  }
+
+  _onFilterChange() {
+    this._removeFilms();
+    // ToDo: sort в разметке скинуть в default + filter установить в active
+    this._showedFilmCards = this._filmsModel.getFilms();
+    this._renderFilms(this._filmsModel.getFilms().slice(0, SHOWING_FILM_CARDS_COUNT_ON_START));
+    this._renderShowMoreButton();
   }
 }
