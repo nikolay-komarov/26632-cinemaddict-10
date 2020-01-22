@@ -12,20 +12,22 @@ export default class MenuController {
     this._menuComponent = null;
 
     this._onFilterChange = this._onFilterChange.bind(this);
+    this._onDateChange = this._onDateChange.bind(this);
+    this._filmsModel.setDataChangeHandler(this._onDateChange);
   }
 
   render() {
     const container = this._container;
-    const allFilms = this._filmsModel.getFilms();
+    const allFilms = this._filmsModel.getFilmsAll();
     const filters = Object.values(FilterType).map((filterType) => {
       return {
         title: filterType,
         count: getFilmsByFilter(allFilms, filterType).length
       };
     });
-    const oldComponent = this._filterComponent;
+    const oldComponent = this._menuComponent;
 
-    this._menuComponent = new MenuComponent(filters);
+    this._menuComponent = new MenuComponent(filters, this._activeFilterType);
     this._menuComponent.setMenuItemChangeHandler(this._onFilterChange);
 
     if (oldComponent) {
@@ -33,12 +35,13 @@ export default class MenuController {
     } else {
       render(container, this._menuComponent, RenderPosition.BEFOREEND);
     }
-
-    render(container, this._menuComponent, RenderPosition.BEFOREEND);
   }
 
   _onFilterChange(filterType) {
     this._filmsModel.setFilter(filterType);
     this._activeFilterType = filterType;
+  }
+  _onDateChange() {
+    this.render();
   }
 }

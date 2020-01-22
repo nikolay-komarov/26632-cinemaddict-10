@@ -17,8 +17,8 @@ const createFilterMarkup = (filter, active) => {
   );
 };
 
-const createMenuElementsTemplate = (filters) => {
-  const filtersMarkup = filters.map((it, i) => createFilterMarkup(it, i === 0)).join(`\n`);
+const createMenuElementsTemplate = (filters, activeFilter) => {
+  const filtersMarkup = filters.map((it) => createFilterMarkup(it, it.title === activeFilter)).join(`\n`);
   return (
     `<nav class="main-navigation">
       ${filtersMarkup}
@@ -28,13 +28,14 @@ const createMenuElementsTemplate = (filters) => {
 };
 
 export default class MenuComponent extends AbstractComponent {
-  constructor(filter) {
+  constructor(filters, activeFilter) {
     super();
-    this._filter = filter;
+    this._filters = filters;
+    this._activeFilter = activeFilter;
   }
 
   getTemplate() {
-    return createMenuElementsTemplate(this._filter);
+    return createMenuElementsTemplate(this._filters, this._activeFilter);
   }
 
   setMenuItemChangeHandler(handler) {
@@ -42,6 +43,12 @@ export default class MenuComponent extends AbstractComponent {
       if (evt.target.tagName !== `A`) {
         return;
       }
+
+      this.getElement().querySelectorAll(`.main-navigation__item`)
+      .forEach((it) => {
+        it.classList.remove(`main-navigation__item--active`);
+      });
+      evt.target.closest(`.main-navigation__item`).classList.add(`main-navigation__item--active`);
 
       const menuItemName = getMenuItemNameById(evt.target.id);
       handler(menuItemName);

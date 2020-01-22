@@ -6,6 +6,7 @@ export default class Films {
     this._films = [];
     this._activeFilterType = FilterType.ALL;
 
+    this._dataChangeHandlers = [];
     this._filterChangeHandlers = [];
   }
 
@@ -28,10 +29,14 @@ export default class Films {
       return false;
     }
     this._films = [].concat(this._films.slice(0, index), film, this._films.slice(index + 1));
+    this._dataChangeHandlers.forEach((handler) => handler());
     return true;
   }
 
   setFilterChangeHandler(handler) {
     this._filterChangeHandlers.push(handler);
+  }
+  setDataChangeHandler(handler) {
+    this._dataChangeHandlers.push(handler);
   }
 }

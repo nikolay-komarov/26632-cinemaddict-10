@@ -141,10 +141,10 @@ export default class PageController {
     }
   }
 
-  _onDataChange(movieController, oldData, newData) {
+  _onDataChange(filmController, oldData, newData) {
     const isSuccess = this._filmsModel.updateFilm(oldData.id, newData);
     if (isSuccess) {
-      movieController.render(newData);
+      filmController.render(newData);
     }
   }
 
@@ -168,7 +168,7 @@ export default class PageController {
 
   _onFilterChange() {
     this._removeFilms();
-    // ToDo: sort в разметке скинуть в default + filter установить в active
+    // ToDo: sort в разметке скинуть в default?
     this._showedFilmCards = this._filmsModel.getFilms();
     this._renderFilms(this._filmsModel.getFilms().slice(0, SHOWING_FILM_CARDS_COUNT_ON_START));
     this._renderShowMoreButton();
