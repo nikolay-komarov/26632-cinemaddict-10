@@ -1,5 +1,5 @@
 import AbstractComponent from './abstract-component.js';
-import {FilterType} from '../utils/const.js';
+import {FilterType, MenuItem} from '../utils/const.js';
 
 const MENU_ID_PREFIX = `menu-item__`;
 
@@ -12,7 +12,7 @@ const createFilterMarkup = (filter, active) => {
   return (
     `<a href="#${title}"
       class="main-navigation__item ${(active) ? `main-navigation__item--active` : ``}"
-      id="menu-item__${title}">${title}
+      id="${MENU_ID_PREFIX}${title}">${title}
       ${(title !== FilterType.ALL) ? `<span class="main-navigation__item-count">` + count + `</span></a>` : ``}`
   );
 };
@@ -22,7 +22,7 @@ const createMenuElementsTemplate = (filters, activeFilter) => {
   return (
     `<nav class="main-navigation">
       ${filtersMarkup}
-      <a href="#stats" class="main-navigation__item main-navigation__item--additional">Stats</a>
+      <a href="#stats" class="main-navigation__item main-navigation__item--additional" id="${MENU_ID_PREFIX}${MenuItem.STAT}">Stats</a>
     </nav>`
   );
 };

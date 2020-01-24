@@ -65,3 +65,11 @@ export const FilterType = {
   HISTORY: `History`,
   FAVORITES: `Favorites`
 };
+
+export const MenuItem = {
+  ALL: `All`,
+  WATCHLIST: `Watchlist`,
+  HISTORY: `History`,
+  FAVORITES: `Favorites`,
+  STAT: `Stat`
+};

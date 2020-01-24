@@ -1,12 +1,16 @@
 import MenuComponent from '../components/menu-elements.js';
-import {FilterType} from '../utils/const.js';
+import {FilterType, MenuItem} from '../utils/const.js';
 import {getFilmsByFilter} from '../utils/filter.js';
 import {render, replace, RenderPosition} from '../utils/render.js';
 
 export default class MenuController {
-  constructor(container, filmsModel) {
+  constructor(container, filmsModel, statsComponenet, pageController) {
     this._container = container;
     this._filmsModel = filmsModel;
+
+    this._statsComponenet = statsComponenet;
+    this._statsComponenetElement = statsComponenet.getElement();
+    this._pageController = pageController;
 
     this._activeFilterType = FilterType.ALL;
     this._menuComponent = null;
@@ -38,8 +42,15 @@ export default class MenuController {
   }
 
   _onFilterChange(filterType) {
-    this._filmsModel.setFilter(filterType);
-    this._activeFilterType = filterType;
+    if (filterType === MenuItem.STAT) {
+      this._pageController.hide();
+      this._statsComponenet.show();
+    } else {
+      this._pageController.show();
+      this._statsComponenet.hide();
+      this._filmsModel.setFilter(filterType);
+      this._activeFilterType = filterType;
+    }
   }
   _onDateChange() {
     this.render();

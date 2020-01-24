@@ -122,9 +122,10 @@ const generateFilmComments = () => {
     .fill(``)
     .map(() => {
       return {
+        id: Math.random(),
         emoji: getRandomArrayItem(COMMENTS_EMOJIES),
         text: getRandomArrayItem(COMMENTS_TEXTS),
-        autor: getRandomArrayItem(COMMENTS_AUTHORS),
+        author: getRandomArrayItem(COMMENTS_AUTHORS),
         day: getRandomDate()
       };
     });
