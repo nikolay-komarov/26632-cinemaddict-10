@@ -60,8 +60,16 @@ export const EMOJI_ICONS = [
 ];
 
 export const FilterType = {
-  ALL: `All movies`,
+  ALL: `All`,
   WATCHLIST: `Watchlist`,
   HISTORY: `History`,
   FAVORITES: `Favorites`
+};
+
+export const MenuItem = {
+  ALL: `All`,
+  WATCHLIST: `Watchlist`,
+  HISTORY: `History`,
+  FAVORITES: `Favorites`,
+  STAT: `Stat`
 };

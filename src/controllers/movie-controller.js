@@ -9,9 +9,10 @@ const Mode = {
 };
 
 export default class MovieController {
-  constructor(container, onDataChange, onViewChange) {
+  constructor(container, onDataChange, onViewChange, userName) {
     this._container = container;
     this._siteBodyElement = document.querySelector(`body`);
+    this._userName = userName;
 
     this._filmCard = null;
 
@@ -29,6 +30,8 @@ export default class MovieController {
     this._addToWatchlistHandler = this._addToWatchlistHandler.bind(this);
     this._markAsWatchedHandler = this._markAsWatchedHandler.bind(this);
     this._markAsFavoriteHandler = this._markAsFavoriteHandler.bind(this);
+
+    this._onCommentDataChange = this._onCommentDataChange.bind(this);
   }
 
   render(filmCard) {
@@ -38,7 +41,7 @@ export default class MovieController {
     const oldFilmDetailsComponent = this._filmDetailsComponent;
 
     this._filmCardComponent = this._createFilmCardComponent(this._filmCard);
-    this._filmDetailsComponent = this._createFilmDetailsComponent(this._filmCard);
+    this._filmDetailsComponent = this._createFilmDetailsComponent(this._filmCard, this._userName);
 
     if (oldFilmCardComponent && oldFilmDetailsComponent) {
       replace(this._filmCardComponent, oldFilmCardComponent);
@@ -64,8 +67,8 @@ export default class MovieController {
     return filmCardComponent;
   }
 
-  _createFilmDetailsComponent(filmCard) {
-    const filmDetailsComponent = new FilmDetailsComponent(filmCard);
+  _createFilmDetailsComponent(filmCard, userName) {
+    const filmDetailsComponent = new FilmDetailsComponent(filmCard, userName);
 
     filmDetailsComponent.setCloseButtonClickHandler(this._closeFilmDetails);
 
@@ -73,6 +76,9 @@ export default class MovieController {
     filmDetailsComponent.setAddToWatchlistButtonClickHandler(this._addToWatchlistHandler);
     filmDetailsComponent.setMarkAsWatchedButtonClickHandler(this._markAsWatchedHandler);
     filmDetailsComponent.setMarkAsFavoriteButtonClickHandler(this._markAsFavoriteHandler);
+
+    filmDetailsComponent.setDeleteCommentButtonsClickHandler(this._onCommentDataChange);
+    filmDetailsComponent.setAddCommentKeyDownHandler(this._onCommentDataChange);
 
     filmDetailsComponent.setUserRatingClickHandler(() => {
       let newFilmCard = getDeepClone(filmCard);
@@ -111,7 +117,7 @@ export default class MovieController {
   _showFilmDetails() {
     this._onViewChange();
 
-    this._filmDetailsComponent = this._createFilmDetailsComponent(this._filmCard);
+    this._filmDetailsComponent = this._createFilmDetailsComponent(this._filmCard, this._userName);
     render(this._siteBodyElement, this._filmDetailsComponent, RenderPosition.BEFOREEND); // рендерим карточку с детальной информацией по фильму в body
     document.addEventListener(`keydown`, this._onEscKeyDown);
 
@@ -129,6 +135,22 @@ export default class MovieController {
     if (isEscKey) {
       this._closeFilmDetails();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
+    }
+  }
+
+  _onCommentDataChange(oldComment, newComment) {
+    if (oldComment !== null || !newComment !== null) {
+      let newFilmCard = getDeepClone(this._filmCard);
+      if (oldComment === null) { // добавим новый комментарий
+        newFilmCard.comments.push(newComment);
+        newFilmCard.commentsCount = newFilmCard.comments.length;
+      } else if (newComment === null) { // удалим старый комментарий
+        newFilmCard.comments = newFilmCard.comments.filter((it) => it.id !== oldComment.id);
+        newFilmCard.commentsCount = newFilmCard.comments.length;
+      } else {
+        return;
+      }
+      this._onDataChange(this, this._filmCard, newFilmCard);
     }
   }
 }

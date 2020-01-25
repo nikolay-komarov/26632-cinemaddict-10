@@ -2,11 +2,17 @@ import AbstractSmartComponent from './abstract-smart-component.js';
 import {formatDate} from '../utils/common.js';
 import {VISUALLY_HIDDEN_CSS_CLASS, USER_FILM_RATING_MIN, USER_FILM_RATING_MAX, EMOJI_ICONS} from '../utils/const.js';
 
+const COMMMENT_ID_PREFIX = `film-details-comment-id__`;
+
+const getCommentId = (id) => {
+  return id.substring(COMMMENT_ID_PREFIX.length);
+};
+
 const createCommentMarkup = (comments) => {
   return comments.map((it) => {
     const commentsDate = formatDate(it.day);
     return (
-      `<li class="film-details__comment">
+      `<li class="film-details__comment"  id="${COMMMENT_ID_PREFIX}${it.id}">
         <span class="film-details__comment-emoji">
           <img src="${it.emoji}" width="55" height="55" alt="emoji">
         </span>
@@ -262,9 +268,10 @@ const createFilmDetailsTemplate = (card, options = {}) => {
 };
 
 export default class FilmDetails extends AbstractSmartComponent {
-  constructor(card) {
+  constructor(card, userName) {
     super();
     this._card = card;
+    this._userName = userName;
 
     // this.isComponetShowing = false;
 
@@ -282,6 +289,8 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._markAsWatchedButtonClickHandler = null;
     this._markAsFavoriteButtonClickHandler = null;
     this._userRatingClickHandler = null;
+    this._deleteButtonClickHandler = null;
+    this._addCommentKeyDownHandler = null;
 
     this._subscribeOnEvents();
   }
@@ -317,11 +326,6 @@ export default class FilmDetails extends AbstractSmartComponent {
       .addEventListener(`click`, handler);
   }
 
-  // removeCloseButtonClickHandler(handler) {
-  //   this.getElement().querySelector(`.film-details__close-btn`)
-  //     .removeEventListener(`click`, handler);
-  // }
-
   setAddToWatchlistButtonClickHandler(handler) {
     this._addToWatchlistButtonClickHandler = handler;
     this.getElement().querySelector(`.film-details__control-label--watchlist`)
@@ -344,6 +348,36 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._userRatingClickHandler = handler;
     this.getElement().querySelector(`.film-details__user-rating-score`)
       .addEventListener(`change`, handler);
+  }
+
+  setDeleteCommentButtonsClickHandler(handler) {
+    this._deleteButtonClickHandler = handler;
+    this.getElement().querySelectorAll(`.film-details__comment-delete`)
+      .forEach((it) => it.addEventListener(`click`, (evt) => {
+        const commentToDelete = this._card.comments.find((comment) => toString(comment.id) === toString(getCommentId(evt.target.closest(`.film-details__comment`).id)));
+        handler(commentToDelete, null);
+      }));
+  }
+
+  setAddCommentKeyDownHandler(handler) {
+    this._addCommentKeyDownHandler = handler;
+    this.getElement().querySelector(`.film-details__comment-input`)
+      .addEventListener(`keydown`, (evt) => {
+        if (this._options.userCommentEmoji !== null) {
+          const isEnterCtrlKey = (evt.key === `Enter` && evt.ctrlKey);
+          if (isEnterCtrlKey) {
+            // соберем новый комментарий
+            const newComment = {
+              id: Math.random(),
+              emoji: EMOJI_ICONS.find((item) => item.emojiTitle === this._options.userCommentEmoji).emojiFile,
+              text: evt.target.value,
+              author: this._userName,
+              day: new Date(),
+            };
+            handler(null, newComment);
+          }
+        }
+      });
   }
 
   _subscribeOnEvents() {
@@ -384,6 +418,8 @@ export default class FilmDetails extends AbstractSmartComponent {
     this.setMarkAsWatchedButtonClickHandler(this._markAsWatchedButtonClickHandler);
     this.setMarkAsFavoriteButtonClickHandler(this._markAsFavoriteButtonClickHandler);
     this.setUserRatingClickHandler(this._userRatingClickHandler);
+    this.setDeleteCommentButtonsClickHandler(this._deleteButtonClickHandler);
+    this.setAddCommentKeyDownHandler(this._addCommentKeyDownHandler);
     this._subscribeOnEvents();
   }
 }
