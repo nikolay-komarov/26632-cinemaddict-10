@@ -36,7 +36,7 @@ export const FILM_RATING_MAX = 10;
 export const USER_FILM_RATING_MIN = 1; // не менее 1
 export const USER_FILM_RATING_MAX = 9; // не более 9
 
-export const YEAR_SECONDS_COUNT = 31536000;
+export const YEAR_MILLISECONDS_COUNT = 60 * 60 * 24 * 365 * 1000;
 
 export const VISUALLY_HIDDEN_CSS_CLASS = `visually-hidden`;
 

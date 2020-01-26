@@ -1,6 +1,7 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
 import {formatDate} from '../utils/common.js';
 import {VISUALLY_HIDDEN_CSS_CLASS, USER_FILM_RATING_MIN, USER_FILM_RATING_MAX, EMOJI_ICONS} from '../utils/const.js';
+import he from 'he';
 
 const COMMMENT_ID_PREFIX = `film-details-comment-id__`;
 
@@ -147,7 +148,7 @@ const createFilmDetailsTemplate = (card, options = {}) => {
     duration,
     genres,
     poster,
-    description,
+    description: notSanitizedDescription,
     comments,
     commentsCount,
     age,
@@ -167,6 +168,7 @@ const createFilmDetailsTemplate = (card, options = {}) => {
   const userRatingContainerTemplate = createUserRatingContainerMarkup(card);
   const userCommentEmojiTemplate = (userCommentEmoji) ? createUserEmojiCommentMarkup(userCommentEmoji) : ``;
   const emojiListTemplate = createEmojiListMarkup(userCommentEmoji);
+  const description = he.encode(notSanitizedDescription);
 
   return (
     `<section class="film-details">

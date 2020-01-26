@@ -44,6 +44,7 @@ export default class MenuController {
   _onFilterChange(filterType) {
     if (filterType === MenuItem.STAT) {
       this._pageController.hide();
+      this._statsComponenet.updateFilmsModel(this._filmsModel);
       this._statsComponenet.show();
     } else {
       this._pageController.show();
