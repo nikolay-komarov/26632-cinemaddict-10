@@ -24,3 +24,7 @@ export const getRandomDate = () => {
 export const getDeepClone = (oldObj) => {
   return JSON.parse(JSON.stringify(oldObj));
 };
+
+export const getUniqItems = (item, index, array) => {
+  return array.indexOf(item) === index;
+};

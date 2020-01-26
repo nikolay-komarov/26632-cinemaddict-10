@@ -3,6 +3,7 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import moment from 'moment';
 import {renderElement, RenderPosition} from '../utils/render.js';
+import {getUniqItems} from '../utils/common.js';
 
 const StatTimeFilter = {
   ALL: `statistic-all-time`,
@@ -27,10 +28,6 @@ const getFilmWatchedMonth = (films) => {
 const getFilmWatchedYear = (films) => {
   const start = moment().subtract(1, `year`);
   return films.filter((it) => moment(it.userDetails.watchingDate).isAfter(start._d));
-};
-
-const getUniqItems = (item, index, array) => {
-  return array.indexOf(item) === index;
 };
 
 const createStatsTextChartTemplate = (
@@ -88,6 +85,7 @@ const renderGenreChart = (genreCtx, films) => {
         }, 0)),
         backgroundColor: `rgb(255,255,0)`,
         borderWidth: 1,
+        barThickness: 30,
       }]
     },
     options: {
@@ -116,7 +114,6 @@ const renderGenreChart = (genreCtx, films) => {
           }
         }],
         yAxes: [{
-          barThickness: 30,
           ticks: {
             fontSize: 18,
             fontColor: `#ffffff`,
@@ -196,7 +193,7 @@ export default class StatsElement extends AbstractSmartComponent {
     this._genreChart = null;
 
     this._setStatFilterItemChangeHandler((filterName) => {
-      this._setTextChartOptionsByFilerName(filterName);
+      this._setTextChartOptionsByFilterName(filterName);
       this._renderChart();
     });
   }
@@ -218,7 +215,7 @@ export default class StatsElement extends AbstractSmartComponent {
     this._topGenre = getTopGenre(this._watchedFilteredFilms);
   }
 
-  _setTextChartOptionsByFilerName(filterName) {
+  _setTextChartOptionsByFilterName(filterName) {
     switch (filterName) {
       case StatTimeFilter.ALL:
         this._watchedFilteredFilms = getWatchedFilms(this._films);
