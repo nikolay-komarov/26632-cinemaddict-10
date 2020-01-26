@@ -19,7 +19,14 @@ const FILM_DURATION_MIN_MAX = 60;
 const getFilmDuration = () => {
   const filmHours = getRandomIntegerNumber(FILM_DURATION_HOUR_MIN, FILM_DURATION_HOUR_MAX);
   const filmMinutes = getRandomIntegerNumber(FILM_DURATION_MIN_MIN, FILM_DURATION_MIN_MAX);
-  return `${filmHours}h ${filmMinutes}m`;
+  return {
+    filmHours,
+    filmMinutes
+  };
+};
+
+const getFilmDurationString = (duration) => {
+  return `${duration.filmHours}h ${duration.filmMinutes}m`;
 };
 
 const FILM_GANRES = [
@@ -132,10 +139,9 @@ const generateFilmComments = () => {
 };
 
 const generateWatchedDate = () => {
-  const sign = Math.random() > 0.5 ? 1 : -1;
-  const diffValue = sign * getRandomIntegerNumber(0, YEAR_SECONDS_COUNT);
+  const diffValue = getRandomIntegerNumber(0, YEAR_SECONDS_COUNT);
 
-  return new Date() + diffValue;
+  return (new Date()) - diffValue;
 };
 
 const generateUserDetails = () => {
@@ -148,7 +154,7 @@ const generateUserDetails = () => {
     personalRating,
     watchlist: Math.random() > 0.5,
     alreadyWatched,
-    watchingDate: generateWatchedDate(),
+    watchingDate: alreadyWatched ? generateWatchedDate() : null,
     favorite: Math.random() > 0.5
   };
 };
@@ -157,6 +163,8 @@ const generateFilmCard = () => {
   const commentsArray = generateFilmComments();
 
   const filmTitle = getRandomArrayItem(FILM_TITLES);
+
+  const durationStract = getFilmDuration();
 
   const writersList = `` + getRandomArrayItem(WRITERS);
   const actorsList = `` + getRandomArrayItem(ACTORS);
@@ -171,7 +179,8 @@ const generateFilmCard = () => {
     titleOriginal: `Original: ` + filmTitle,
     rating: getRandomIntegerNumber(FILM_RATING_MIN, FILM_RATING_MAX * 10) / 10,
     year: releaseDate.getFullYear(),
-    duration: getFilmDuration(),
+    durationStract,
+    duration: getFilmDurationString(durationStract),
     genres: getFilmGenres(FILM_GANRES),
     poster: FILM_POSTERS_PATH + getRandomArrayItem(FILM_POSTERS),
     description: getFilmDescription(),

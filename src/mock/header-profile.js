@@ -30,7 +30,7 @@ const createUserRank = () => {
   return userRank;
 };
 
-export const generateHeaderProfile = {
+export const generatedHeaderProfile = {
   rating: createUserRank(),
   avatar: `images/bitmap@2x.png`
 };
