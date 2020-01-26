@@ -1,5 +1,5 @@
 import {getRandomArrayItem, getRandomIntegerNumber, getRandomDate} from '../utils/common.js';
-import {YEAR_SECONDS_COUNT, FILM_RATING_MIN, FILM_RATING_MAX, USER_FILM_RATING_MIN, USER_FILM_RATING_MAX, FILM_COMMENTS_COUNT_MIN, FILM_COMMENTS_COUNT_MAX} from '../utils/const.js';
+import {YEAR_MILLISECONDS_COUNT, FILM_RATING_MIN, FILM_RATING_MAX, USER_FILM_RATING_MIN, USER_FILM_RATING_MAX, FILM_COMMENTS_COUNT_MIN, FILM_COMMENTS_COUNT_MAX} from '../utils/const.js';
 
 const FILM_TITLES = [
   `made-for-each-other`,
@@ -139,8 +139,7 @@ const generateFilmComments = () => {
 };
 
 const generateWatchedDate = () => {
-  const diffValue = getRandomIntegerNumber(0, YEAR_SECONDS_COUNT);
-
+  const diffValue = getRandomIntegerNumber(0, YEAR_MILLISECONDS_COUNT);
   return (new Date()) - diffValue;
 };
 

@@ -210,6 +210,14 @@ export default class StatsElement extends AbstractSmartComponent {
     );
   }
 
+  updateFilmsModel(filmModel) {
+    this._films = filmModel.getFilmsAll();
+    this._watchedFilteredFilms = getWatchedFilms(this._films);
+    this._watchedFilteredFilmsCount = this._watchedFilteredFilms.length;
+    this._watchedFilteredFilmsDuration = getFilmsDuration(this._watchedFilteredFilms);
+    this._topGenre = getTopGenre(this._watchedFilteredFilms);
+  }
+
   _setTextChartOptionsByFilerName(filterName) {
     switch (filterName) {
       case StatTimeFilter.ALL:
@@ -287,9 +295,13 @@ export default class StatsElement extends AbstractSmartComponent {
   _resetChart() {
     const element = this.getElement();
 
-    if (this._genreChart !== null) {
+    if (element.querySelector(`.statistic__text-list`)) {
       element.querySelector(`.statistic__text-list`).remove();
+    }
+    if (element.querySelector(`.statistic__chart-wrap`)) {
       element.querySelector(`.statistic__chart-wrap`).remove();
+    }
+    if (this._genreChart !== null) {
       this._genreChart.destroy();
     }
 
