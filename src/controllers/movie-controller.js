@@ -2,7 +2,6 @@ import FilmCardComponent from '../components/film-card.js';
 import FilmDetailsComponent from '../components/film-details.js';
 import Film from '../models/movie.js';
 import {render, remove, replace, RenderPosition} from '../utils/render.js';
-import {getDeepClone} from '../utils/common.js';
 
 const Mode = {
   DEFAULT: `default`,
@@ -83,8 +82,7 @@ export default class MovieController {
     filmDetailsComponent.setAddCommentKeyDownHandler(this._onCommentDataChange);
 
     filmDetailsComponent.setUserRatingClickHandler(() => {
-      // const newFilmCard = Film.clone((this._filmCard));
-      const newFilmCard = getDeepClone(filmCard);
+      const newFilmCard = Film.clone((this._filmCard));
       newFilmCard.userDetails.personalRating = this._filmDetailsComponent.userRating;
       this._onDataChange(this, filmCard, newFilmCard);
     });
@@ -93,23 +91,20 @@ export default class MovieController {
   }
 
   _addToWatchlistHandler() {
-    // const newFilmCard = Film.clone((this._filmCard));
-    const newFilmCard = getDeepClone(this._filmCard);
+    const newFilmCard = Film.clone((this._filmCard));
     newFilmCard.userDetails.watchlist = !this._filmCard.userDetails.watchlist;
     this._onDataChange(this, this._filmCard, newFilmCard);
   }
 
   _markAsWatchedHandler() {
-    // const newFilmCard = Film.clone((this._filmCard));
-    const newFilmCard = getDeepClone(this._filmCard);
+    const newFilmCard = Film.clone((this._filmCard));
     newFilmCard.userDetails.alreadyWatched = !this._filmCard.userDetails.alreadyWatched;
     newFilmCard.userDetails.watchingDate = new Date();
     this._onDataChange(this, this._filmCard, Film.clone(newFilmCard));
   }
 
   _markAsFavoriteHandler() {
-    // const newFilmCard = Film.clone((this._filmCard));
-    const newFilmCard = getDeepClone(this._filmCard);
+    const newFilmCard = Film.clone((this._filmCard));
     newFilmCard.userDetails.favorite = !this._filmCard.userDetails.favorite;
     this._onDataChange(this, this._filmCard, Film.clone(newFilmCard));
   }
@@ -146,7 +141,8 @@ export default class MovieController {
 
   _onCommentDataChange(oldComment, newComment) {
     if (oldComment !== null || !newComment !== null) {
-      let newFilmCard = getDeepClone(this._filmCard);
+      // const newFilmCard = getDeepClone(this._filmCard);
+      const newFilmCard = Film.clone(this._filmCard);
       if (oldComment === null) { // добавим новый комментарий
         newFilmCard.comments.push(newComment);
         newFilmCard.commentsCount = newFilmCard.comments.length;

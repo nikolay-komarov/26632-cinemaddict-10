@@ -50,7 +50,7 @@ export const EMOJI_ICONS = [
     emojiFile: `./images/emoji/sleeping.png`
   },
   {
-    emojiTitle: `emoji-gpuke`,
+    emojiTitle: `emoji-puke`,
     emojiFile: `./images/emoji/puke.png`
   },
   {

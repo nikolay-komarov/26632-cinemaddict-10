@@ -6,8 +6,6 @@ import FilmsModel from './models/movies.js';
 import StatsComponent from './components/stats.js';
 
 import {generatedHeaderProfile} from './mock/header-profile';
-// import {generateFilmCards} from './mock/film-card.js';
-// import {FILM_COUNT} from './utils/const.js';
 
 import API from './api.js';
 const AUTHORIZATION = `Basic eo0w590ik29889a`;
@@ -22,21 +20,12 @@ const siteMainElement = document.querySelector(`.main`);
 const headerProfile = generatedHeaderProfile;
 render(siteHeaderElement, new HeaderProfileComponent(headerProfile), RenderPosition.BEFOREEND);
 
-// const filmCards = generateFilmCards(FILM_COUNT);
-// console.log(filmCards);
-
 const filmsModel = new FilmsModel();
 const api = new API(END_POINT, AUTHORIZATION);
 api.getFilms()
   .then((filmCards) => {
-    filmCards.forEach((it) => {
-      api.getComments(it.id)
-      .then((comments) => {
-        it.comments = comments;
-      });
-    });
-
     filmsModel.setFilms(filmCards);
+
     const userName = `mockData`; // пока так?
 
     const statsComponenet = new StatsComponent(filmsModel, headerProfile);

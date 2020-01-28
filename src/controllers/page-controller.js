@@ -4,8 +4,6 @@ import FilmsListComponent from '../components/films-list.js';
 import FilmsListExtraComponent from '../components/films-list-extra.js';
 import FilmsListContainerComponent from '../components/films-list-container.js';
 
-import Film from '../models/movie.js';
-
 import ShowMoreButtonComponent from '../components/show-more-button.js';
 import MovieController from './movie-controller.js';
 
@@ -146,26 +144,13 @@ export default class PageController {
   }
 
   _onDataChange(filmController, oldData, newData) {
-    const newDataCloned = Film.clone(newData); // ?
-    this._api.updateFilm(oldData.id, newDataCloned)
+    this._api.updateFilm(oldData.id, newData)
     .then((updatedFilm) => {
-      this._api.getComments(updatedFilm.id)
-        .then((comments) => {
-          updatedFilm.comments = comments;
-        });
-
-      // console.log(updatedFilm);
-
       const isSuccess = this._filmsModel.updateFilm(oldData.id, newData);
       if (isSuccess) {
         filmController.render(updatedFilm);
       }
     });
-
-    // const isSuccess = this._filmsModel.updateFilm(oldData.id, newData);
-    // if (isSuccess) {
-    //   filmController.render(newData);
-    // }
   }
 
   _onViewChange() {
