@@ -4,6 +4,12 @@ import {VISUALLY_HIDDEN_CSS_CLASS, USER_FILM_RATING_MIN, USER_FILM_RATING_MAX, E
 import he from 'he';
 
 const COMMMENT_ID_PREFIX = `film-details-comment-id__`;
+const EMOJI_PREFIX = `emoji-`;
+const SHAKE_ANIMATION_TIMEOUT = `2s`;
+const NEW_COMMENT_BORDER_STYLE_DEFAULT = `solid 1px #979797`;
+const NEW_COMMENT_BORDER_STYLE_ON_ERROR = `solid 2px red`;
+// const USER_FILM_RATING_STYLE_COLOR_CHECKED = `#ffe800`;
+// const USER_FILM_RATING_STYLE_COLOR_ON_ERROR = `red`;
 
 const getCommentId = (id) => {
   return id.substring(COMMMENT_ID_PREFIX.length);
@@ -69,8 +75,8 @@ const createEmojiListMarkup = (userEmoji) => {
       <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
     </label>
 
-    <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-gpuke" value="grinning" ${userEmoji === `emoji-gpuke` ? `checked` : ``}>
-    <label class="film-details__emoji-label" for="emoji-gpuke">
+    <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="grinning" ${userEmoji === `emoji-gpuke` ? `checked` : ``}>
+    <label class="film-details__emoji-label" for="emoji-puke">
       <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
     </label>
 
@@ -275,8 +281,6 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._card = card;
     this._userName = userName;
 
-    // this.isComponetShowing = false;
-
     this._inWatchList = card.userDetails.watchlist;
     this._isWatched = card.userDetails.alreadyWatched;
     this._isFavorite = card.userDetails.favorite;
@@ -297,23 +301,6 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._subscribeOnEvents();
   }
 
-  // rerender() {
-  //   const oldElement = this.getElement();
-  //   const parent = oldElement.parentElement;
-
-  //   this.removeElement();
-
-  //   const newElement = this.getElement();
-
-  //   // попытка удалить анимацию при ререндинге попапа - не работает! - ?
-  //   if (this.isComponetShowing) {
-  //     newElement.style.animation = ``;
-  //   }
-
-  //   parent.replaceChild(newElement, oldElement);
-
-  //   this.recoveryListeners();
-  // }
   rerender() {
     super.rerender();
   }
@@ -356,7 +343,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._deleteButtonClickHandler = handler;
     this.getElement().querySelectorAll(`.film-details__comment-delete`)
       .forEach((it) => it.addEventListener(`click`, (evt) => {
-        const commentToDelete = this._card.comments.find((comment) => toString(comment.id) === toString(getCommentId(evt.target.closest(`.film-details__comment`).id)));
+        const commentToDelete = this._card.comments.find((comment) => (comment.id).toString() === (getCommentId(evt.target.closest(`.film-details__comment`).id)).toString());
         handler(commentToDelete, null);
       }));
   }
@@ -370,8 +357,8 @@ export default class FilmDetails extends AbstractSmartComponent {
           if (isEnterCtrlKey) {
             // соберем новый комментарий
             const newComment = {
-              id: Math.random(),
-              emoji: EMOJI_ICONS.find((item) => item.emojiTitle === this._options.userCommentEmoji).emojiFile,
+              id: Math.random().toString(),
+              emoji: this._options.userCommentEmoji.substring(EMOJI_PREFIX.length),
               text: evt.target.value,
               author: this._userName,
               day: new Date(),
@@ -388,23 +375,19 @@ export default class FilmDetails extends AbstractSmartComponent {
     element.querySelector(`.film-details__control-label--watchlist`)
       .addEventListener(`click`, () => {
         this._inWatchList = !this._inWatchList;
-        // this.rerender();
       });
     element.querySelector(`.film-details__control-label--watched`)
       .addEventListener(`click`, () => {
         this._isWatched = !this._isWatched;
-        // this.rerender();
       });
     element.querySelector(`.film-details__control-label--favorite`)
       .addEventListener(`click`, () => {
         this._isFavorite = !this._isFavorite;
-        // this.rerender();
       });
 
     const userRating = element.querySelector(`.film-details__user-rating-score`);
     userRating.addEventListener(`change`, (evt) => {
       this.userRating = Number(evt.target.value);
-      // this.rerender();
     });
 
     const emojiList = element.querySelector(`.film-details__emoji-list`);
@@ -424,4 +407,29 @@ export default class FilmDetails extends AbstractSmartComponent {
     this.setAddCommentKeyDownHandler(this._addCommentKeyDownHandler);
     this._subscribeOnEvents();
   }
+
+  shakeForm() {
+    const element = this.getElement();
+    element.style.animationName = `shake`;
+    element.style.animationDuration = SHAKE_ANIMATION_TIMEOUT;
+    // this.getElement().querySelector(`.film-details__comment-input`).removeAttribute(`readonly`, `readonly`);
+  }
+  onErrorCommentInput() {
+    const element = this.getElement();
+    const newCommentField = element.querySelector(`.film-details__comment-label`);
+    newCommentField.style.border = NEW_COMMENT_BORDER_STYLE_ON_ERROR;
+  }
+  // onErrorUserRating() {
+  //   const element = this.getElement();
+  //   const userRatingLabel = element.querySelector(`.film-details__user-rating-label`);
+  //   userRatingLabel.style.backgroundColor = USER_FILM_RATING_STYLE_COLOR_ON_ERROR;
+  // }
+  resetFromError() {
+    const element = this.getElement();
+    const newCommentField = element.querySelector(`.film-details__comment-label`);
+    newCommentField.style.border = NEW_COMMENT_BORDER_STYLE_DEFAULT;
+    // const userRatingLabel = element.querySelector(`.film-details__user-rating-label`);
+    // userRatingLabel.style.backgroundColor = USER_FILM_RATING_STYLE_COLOR_ON_ERROR;
+  }
 }
+
