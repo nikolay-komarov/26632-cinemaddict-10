@@ -15,7 +15,7 @@ const createCommentMarkup = (comments) => {
     return (
       `<li class="film-details__comment"  id="${COMMMENT_ID_PREFIX}${it.id}">
         <span class="film-details__comment-emoji">
-          <img src="${it.emoji}" width="55" height="55" alt="emoji">
+          <img src="./images/emoji/${it.emoji}.png" width="55" height="55" alt="emoji">
         </span>
         <div>
           <p class="film-details__comment-text">${it.text}</p>
@@ -388,23 +388,23 @@ export default class FilmDetails extends AbstractSmartComponent {
     element.querySelector(`.film-details__control-label--watchlist`)
       .addEventListener(`click`, () => {
         this._inWatchList = !this._inWatchList;
-        this.rerender();
+        // this.rerender();
       });
     element.querySelector(`.film-details__control-label--watched`)
       .addEventListener(`click`, () => {
         this._isWatched = !this._isWatched;
-        this.rerender();
+        // this.rerender();
       });
     element.querySelector(`.film-details__control-label--favorite`)
       .addEventListener(`click`, () => {
         this._isFavorite = !this._isFavorite;
-        this.rerender();
+        // this.rerender();
       });
 
     const userRating = element.querySelector(`.film-details__user-rating-score`);
     userRating.addEventListener(`change`, (evt) => {
-      this.userRating = evt.target.value;
-      this.rerender();
+      this.userRating = Number(evt.target.value);
+      // this.rerender();
     });
 
     const emojiList = element.querySelector(`.film-details__emoji-list`);

@@ -6,8 +6,10 @@ import FilmsModel from './models/movies.js';
 import StatsComponent from './components/stats.js';
 
 import {generatedHeaderProfile} from './mock/header-profile';
-import {generateFilmCards} from './mock/film-card.js';
-import {FILM_COUNT} from './utils/const.js';
+
+import API from './api.js';
+const AUTHORIZATION = `Basic eo0w590ik29889a`;
+const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict/`;
 
 import {render, RenderPosition} from './utils/render.js';
 
@@ -18,25 +20,27 @@ const siteMainElement = document.querySelector(`.main`);
 const headerProfile = generatedHeaderProfile;
 render(siteHeaderElement, new HeaderProfileComponent(headerProfile), RenderPosition.BEFOREEND);
 
-const filmCards = generateFilmCards(FILM_COUNT);
-
 const filmsModel = new FilmsModel();
-filmsModel.setFilms(filmCards);
+const api = new API(END_POINT, AUTHORIZATION);
+api.getFilms()
+  .then((filmCards) => {
+    filmsModel.setFilms(filmCards);
 
-const userName = `mockData`; // пока так?
+    const userName = `mockData`; // пока так?
 
-const statsComponenet = new StatsComponent(filmsModel, headerProfile);
+    const statsComponenet = new StatsComponent(filmsModel, headerProfile);
 
-const filmsElement = new FilmsElementComponent();
-const pageController = new PageController(filmsElement, filmsModel, userName);
-const menuController = new MenuController(siteMainElement, filmsModel, statsComponenet, pageController);
+    const filmsElement = new FilmsElementComponent();
+    const pageController = new PageController(filmsElement, filmsModel, userName, api);
+    const menuController = new MenuController(siteMainElement, filmsModel, statsComponenet, pageController);
 
-menuController.render();
-render(siteMainElement, filmsElement, RenderPosition.BEFOREEND);
-render(siteMainElement, statsComponenet, RenderPosition.BEFOREEND);
-statsComponenet.hide();
-pageController.render();
+    menuController.render();
+    render(siteMainElement, filmsElement, RenderPosition.BEFOREEND);
+    render(siteMainElement, statsComponenet, RenderPosition.BEFOREEND);
+    statsComponenet.hide();
+    pageController.render();
 
-const siteFooterElement = document.querySelector(`.footer`);
-const siteFooterFilmCount = siteFooterElement.querySelector(`.footer__statistics`);
-siteFooterFilmCount.querySelector(`p`).textContent = filmCards.length + ` movies inside`;
+    const siteFooterElement = document.querySelector(`.footer`);
+    const siteFooterFilmCount = siteFooterElement.querySelector(`.footer__statistics`);
+    siteFooterFilmCount.querySelector(`p`).textContent = filmsModel.getFilmsAll().length + ` movies inside`;
+  });

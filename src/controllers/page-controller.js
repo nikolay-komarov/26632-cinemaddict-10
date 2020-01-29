@@ -12,19 +12,20 @@ import {FILM_IN_EXTRA_COUNT, SHOWING_FILM_CARDS_COUNT_ON_START, SHOWING_FILM_CAR
 import {render, remove, RenderPosition} from '../utils/render.js';
 import {SortType} from '../components/sort.js';
 
-const renderFilms = (filmList, filmCards, onDataChange, onViewChange, userName) => {
+const renderFilms = (filmList, filmCards, onDataChange, onViewChange, userName, api) => {
   return filmCards.map((film) => {
-    const filmController = new MovieController(filmList, onDataChange, onViewChange, userName);
+    const filmController = new MovieController(filmList, onDataChange, onViewChange, userName, api);
     filmController.render(film);
     return filmController;
   });
 };
 
 export default class PageController {
-  constructor(container, filmsModel, userName) {
+  constructor(container, filmsModel, userName, api) {
     this._container = container;
     this._filmsModel = filmsModel;
     this._userName = userName;
+    this._api = api;
 
     this._showedFilmCards = [];
     this._showedFilmControllers = [];
@@ -85,7 +86,7 @@ export default class PageController {
         const topRatedContainer = this._topRatedFilmsContainerComponent.getElement();
         render(container, this._topRatedFilmsComponent, RenderPosition.BEFOREEND);
         render(topRatedList, this._topRatedFilmsContainerComponent, RenderPosition.BEFOREEND);
-        renderFilms(topRatedContainer, topRatedCards, this._onDataChange, this._onViewChange, this._userName);
+        renderFilms(topRatedContainer, topRatedCards, this._onDataChange, this._onViewChange, this._userName, this._api);
       }
       // следующие две -> Most commented
       if (mostCommentedCards[FILM_IN_EXTRA_COUNT - 1].commentsCount !== 0) {
@@ -93,7 +94,7 @@ export default class PageController {
         const mostCommentedContainer = this._mostCommentedFilmsContainerComponent.getElement();
         render(container, this._mostCommentedFilmsComponent, RenderPosition.BEFOREEND);
         render(mostCommentedList, this._mostCommentedFilmsContainerComponent, RenderPosition.BEFOREEND);
-        renderFilms(mostCommentedContainer, mostCommentedCards, this._onDataChange, this._onViewChange, this._userName);
+        renderFilms(mostCommentedContainer, mostCommentedCards, this._onDataChange, this._onViewChange, this._userName, this._api);
       }
     }
   }
@@ -134,7 +135,7 @@ export default class PageController {
         const prevFilmsCount = this._showingFilmCardsCount;
         this._showingFilmCardsCount = this._showingFilmCardsCount + SHOWING_FILM_CARDS_COUNT_BY_BUTTON;
 
-        renderFilms(filmsListContainer, this._showedFilmCards.slice(prevFilmsCount, this._showingFilmCardsCount), this._onDataChange, this._onViewChange, this._userName);
+        renderFilms(filmsListContainer, this._showedFilmCards.slice(prevFilmsCount, this._showingFilmCardsCount), this._onDataChange, this._onViewChange, this._userName, this._api);
         if (this._showingFilmCardsCount >= this._showedFilmCards.length) {
           remove(this._showMoreButtonComponent);
         }
@@ -143,10 +144,13 @@ export default class PageController {
   }
 
   _onDataChange(filmController, oldData, newData) {
-    const isSuccess = this._filmsModel.updateFilm(oldData.id, newData);
-    if (isSuccess) {
-      filmController.render(newData);
-    }
+    this._api.updateFilm(oldData.id, newData)
+    .then((updatedFilm) => {
+      const isSuccess = this._filmsModel.updateFilm(oldData.id, newData);
+      if (isSuccess) {
+        filmController.render(updatedFilm);
+      }
+    });
   }
 
   _onViewChange() {
@@ -162,7 +166,7 @@ export default class PageController {
 
   _renderFilms(films) {
     const filmsListContainer = this._filmsListContainer.getElement();
-    const newFilms = renderFilms(filmsListContainer, films, this._onDataChange, this._onViewChange, this._userName);
+    const newFilms = renderFilms(filmsListContainer, films, this._onDataChange, this._onViewChange, this._userName, this._api);
     this._showedFilmControllers = this._showedFilmControllers.concat(newFilms);
     this._showingFilmCardsCount = this._showedFilmControllers.length;
   }
