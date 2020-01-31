@@ -33,6 +33,7 @@ export default class MovieController {
     this._markAsFavoriteHandler = this._markAsFavoriteHandler.bind(this);
 
     this._onCommentDataChange = this._onCommentDataChange.bind(this);
+    this._onUserRatingChange = this._onUserRatingChange.bind(this);
   }
 
   render(filmCard) {
@@ -81,11 +82,7 @@ export default class MovieController {
     filmDetailsComponent.setDeleteCommentButtonsClickHandler(this._onCommentDataChange);
     filmDetailsComponent.setAddCommentKeyDownHandler(this._onCommentDataChange);
 
-    filmDetailsComponent.setUserRatingClickHandler(() => {
-      const newFilmCard = Film.clone((this._filmCard));
-      newFilmCard.userDetails.personalRating = this._filmDetailsComponent.userRating;
-      this._onDataChange(this, filmCard, newFilmCard);
-    });
+    filmDetailsComponent.setUserRatingClickHandler(this._onUserRatingChange);
 
     return filmDetailsComponent;
   }
@@ -140,19 +137,71 @@ export default class MovieController {
   }
 
   _onCommentDataChange(oldComment, newComment) {
+    this._clearErrorComment();
+    const element = this._filmDetailsComponent.getElement().querySelector(`.film-details__comment-input`);
     if (oldComment !== null || !newComment !== null) {
-      // const newFilmCard = getDeepClone(this._filmCard);
       const newFilmCard = Film.clone(this._filmCard);
       if (oldComment === null) { // добавим новый комментарий
-        newFilmCard.comments.push(newComment);
-        newFilmCard.commentsCount = newFilmCard.comments.length;
+        element.setAttribute(`readonly`, `readonly`);
+        this._api.addComment(newFilmCard, newComment)
+          .then(() => {
+            newFilmCard.comments.push(newComment);
+            newFilmCard.commentsCount = newFilmCard.comments.length;
+            element.removeAttribute(`readonly`);
+          })
+          .catch(() => {
+            this._onErrorComment();
+            element.removeAttribute(`readonly`);
+          });
       } else if (newComment === null) { // удалим старый комментарий
-        newFilmCard.comments = newFilmCard.comments.filter((it) => it.id !== oldComment.id);
-        newFilmCard.commentsCount = newFilmCard.comments.length;
+        this._api.deleteComment(oldComment.id)
+          .then(() => {
+            newFilmCard.comments = newFilmCard.comments.filter((it) => it.id !== oldComment.id);
+            newFilmCard.commentsCount = newFilmCard.comments.length;
+          });
       } else {
         return;
       }
       this._onDataChange(this, this._filmCard, Film.clone(newFilmCard));
     }
+  }
+
+  _onUserRatingChange(newUserRating) {
+    this._clearErrorRating();
+    const ratingElements = this._filmDetailsComponent.getElement()
+      .querySelector(`.film-details__user-rating-score`)
+      .getElementsByTagName(`*`);
+    for (let it of ratingElements) {
+      it.setAttribute(`disabled`, `disabled`);
+    }
+    const newFilmCard = Film.clone((this._filmCard));
+    newFilmCard.userDetails.personalRating = newUserRating;
+    this._api.updateFilm(this._filmCard.id, newFilmCard)
+      .then((updatedFilm) => {
+        this._filmCard = updatedFilm;
+        this.render(updatedFilm);
+      })
+      .catch(() => {
+        this._onErrorRating(newUserRating);
+        for (let it of ratingElements) {
+          it.removeAttribute(`disabled`);
+        }
+      });
+    this._onDataChange(this, this._filmCard, newFilmCard);
+  }
+
+  _onErrorComment() {
+    this._filmDetailsComponent.onErrorCommentInput();
+    this._filmDetailsComponent.shakeForm();
+  }
+  _clearErrorComment() {
+    this._filmDetailsComponent.resetCommentStyleFromError();
+  }
+  _onErrorRating(newUserRating) {
+    this._filmDetailsComponent.onErrorUserRating(newUserRating);
+    this._filmDetailsComponent.shakeForm();
+  }
+  _clearErrorRating() {
+    this._filmDetailsComponent.resetRatingStyleFromError();
   }
 }

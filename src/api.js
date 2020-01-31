@@ -29,7 +29,7 @@ export default class API {
       .then((response) => response.json())
       .then((films) => {
         this._films = films;
-        return Promise.all(films.map((card) => this._load({url: `comments/${card.id}`})));
+        return Promise.all(films.map((film) => this._load({url: `comments/${film.id}`})));
       })
       .then((response) => {
         return Promise.all(response.map((it) => it.json()));
@@ -65,24 +65,17 @@ export default class API {
       .then(Movie.parseFilm);
   }
 
-  // addComment(comment) {
-  //   return this._load({
-  //     url: `comments/${comment.id}`,
-  //     method: Method.POST,
-  //     body: JSON.stringify(Movie.commentToServer(comment)),
-  //     headers: new Headers({'Content-Type': `application/json`})
-  //   })
-  //     .then((response) => response.json())
-  //     .then((film) => {
-  //       this._film = film;
-  //       this._film[`comments`] = film.comments;
-  //       return this._film;
-  //     })
-  //     .then(Movie.parseFilm);
-  // }
+  addComment(film, comment) {
+    return this._load({
+      url: `comments/${film.id}`,
+      method: Method.POST,
+      body: JSON.stringify(Movie.commentToServer(comment)),
+      headers: new Headers({'Content-Type': `application/json`})
+    });
+  }
 
   deleteComment(id) {
-    return this._load({url: `comments/${id}`, method: Method.DELETE});
+    return this._load({url: `comments/${id}`, method: Method.DELETE}); // ?
   }
 
   _load({url, method = Method.GET, body = null, headers = new Headers()}) {
@@ -95,5 +88,3 @@ export default class API {
       });
   }
 }
-
-//  API;

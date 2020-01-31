@@ -70,12 +70,12 @@ export default class PageController {
 
       // TopRated, MostCommented
       const getTopRatedFilms = (allFilmCards) => {
-        let ratedArray = allFilmCards.slice();
-        return ratedArray.sort((a, b) => a.rating > b.rating ? 1 : -1).slice(-1 * FILM_IN_EXTRA_COUNT);
+        const ratedFilms = allFilmCards.slice();
+        return ratedFilms.sort((a, b) => a.rating > b.rating ? 1 : -1).slice(-1 * FILM_IN_EXTRA_COUNT);
       };
       const getMostCommentedFilms = (allFilmCards) => {
-        let ratedArray = allFilmCards.slice();
-        return ratedArray.sort((a, b) => a.commentsCount > b.commentsCount ? 1 : -1).slice(-1 * FILM_IN_EXTRA_COUNT);
+        const ratedFilms = allFilmCards.slice();
+        return ratedFilms.sort((a, b) => a.commentsCount > b.commentsCount ? 1 : -1).slice(-1 * FILM_IN_EXTRA_COUNT);
       };
       const topRatedCards = getTopRatedFilms(this._showedFilmCards);
       const mostCommentedCards = getMostCommentedFilms(this._showedFilmCards);
@@ -173,7 +173,6 @@ export default class PageController {
 
   _onFilterChange() {
     this._removeFilms();
-    // ToDo: sort в разметке скинуть в default?
     this._showedFilmCards = this._filmsModel.getFilms();
     this._renderFilms(this._filmsModel.getFilms().slice(0, SHOWING_FILM_CARDS_COUNT_ON_START));
     this._renderShowMoreButton();

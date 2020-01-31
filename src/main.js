@@ -8,7 +8,7 @@ import StatsComponent from './components/stats.js';
 import {generatedHeaderProfile} from './mock/header-profile';
 
 import API from './api.js';
-const AUTHORIZATION = `Basic eo0w590ik29889a`;
+const AUTHORIZATION = `Basic eo0w590ik29889b`;
 const END_POINT = `https://htmlacademy-es-10.appspot.com/cinemaddict/`;
 
 import {render, RenderPosition} from './utils/render.js';
@@ -26,7 +26,7 @@ api.getFilms()
   .then((filmCards) => {
     filmsModel.setFilms(filmCards);
 
-    const userName = `mockData`; // пока так?
+    const userName = `userName`;
 
     const statsComponenet = new StatsComponent(filmsModel, headerProfile);
 
