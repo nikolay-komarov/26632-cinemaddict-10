@@ -137,7 +137,7 @@ export default class MovieController {
   }
 
   _onCommentDataChange(oldComment, newComment) {
-    this._clearError();
+    this._clearErrorComment();
     const element = this._filmDetailsComponent.getElement().querySelector(`.film-details__comment-input`);
     if (oldComment !== null || !newComment !== null) {
       const newFilmCard = Film.clone(this._filmCard);

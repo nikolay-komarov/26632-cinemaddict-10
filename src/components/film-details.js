@@ -437,7 +437,6 @@ export default class FilmDetails extends AbstractSmartComponent {
     const element = this.getElement();
     const newCommentField = element.querySelector(`.film-details__comment-label`);
     newCommentField.style.border = NEW_COMMENT_BORDER_STYLE_DEFAULT;
-    this.userRatingLabel.style.backgroundColor = USER_FILM_RATING_STYLE_COLOR_ON_ERROR;
   }
   resetRatingStyleFromError() {
     const element = this.getElement();
