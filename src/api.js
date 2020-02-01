@@ -11,7 +11,7 @@ const checkStatus = (response) => {
   if (response.status >= 200 && response.status < 300) {
     return response;
   } else {
-    throw new Error(`${response.status}: ${response.statusText}`);
+    throw new Error(`${response.status}: ${response.statusText}`); // ?
   }
 };
 
@@ -48,7 +48,7 @@ export default class API {
     return this._load({
       url: `movies/${id}`,
       method: Method.PUT,
-      body: JSON.stringify(newData.filmToServer()),
+      body: JSON.stringify(newData.convertFilmToServer()),
       headers: new Headers({'Content-Type': `application/json`})
     })
       .then((response) => response.json())
@@ -69,7 +69,7 @@ export default class API {
     return this._load({
       url: `comments/${film.id}`,
       method: Method.POST,
-      body: JSON.stringify(Movie.commentToServer(comment)),
+      body: JSON.stringify(Movie.convertCommentToServer(comment)),
       headers: new Headers({'Content-Type': `application/json`})
     });
   }

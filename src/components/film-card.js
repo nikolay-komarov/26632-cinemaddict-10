@@ -1,5 +1,9 @@
 import AbstractComponent from './abstract-component.js';
-import {SHORT_DESCRIPTION_SYMBOLS, SHORT_DESCRIPTION_END_SYMBOL} from '../utils/const.js';
+
+export const SHORT_DESCRIPTION = {
+  MAX_SYMBOLS: 140,
+  END_SYMBOL: `\u2026`
+};
 
 const createFilmCardControlsMarkup = (card) => {
   const {
@@ -16,7 +20,7 @@ const createFilmCardControlsMarkup = (card) => {
 
 const createFilmCardTemplate = (card) => {
   const {title, rating, year, duration, genres, poster, description, commentsCount} = card;
-  const shortDescription = (description.length < 140) ? description : (description.slice(0, SHORT_DESCRIPTION_SYMBOLS - 1) + SHORT_DESCRIPTION_END_SYMBOL);
+  const shortDescription = (description.length < SHORT_DESCRIPTION.MAX_SYMBOLS) ? description : (description.slice(0, SHORT_DESCRIPTION.MAX_SYMBOLS - 1) + SHORT_DESCRIPTION.END_SYMBOL);
   const filmCardControlsTemplate = createFilmCardControlsMarkup(card);
 
   return (
@@ -65,16 +69,25 @@ export default class FilmCard extends AbstractComponent {
 
   setAddToWatchlistButtonClickHandler(handler) {
     this.getElement().querySelector(`.film-card__controls-item--add-to-watchlist`)
-      .addEventListener(`click`, handler);
+      .addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        handler();
+      });
   }
 
   setMarkAsWatchedButtonClickHandler(handler) {
     this.getElement().querySelector(`.film-card__controls-item--mark-as-watched`)
-      .addEventListener(`click`, handler);
+      .addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        handler();
+      });
   }
 
   setMarAsFavoriteButtonClickHandler(handler) {
     this.getElement().querySelector(`.film-card__controls-item--favorite`)
-      .addEventListener(`click`, handler);
+      .addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        handler();
+      });
   }
 }

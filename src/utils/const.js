@@ -1,4 +1,3 @@
-export const FILM_COUNT = 13;
 export const FILM_IN_EXTRA_COUNT = 2;
 
 export const SHOWING_FILM_CARDS_COUNT_ON_START = 5;
@@ -6,35 +5,10 @@ export const SHOWING_FILM_CARDS_COUNT_BY_BUTTON = 5;
 
 export const FILM_WATCH_COUNT_MAX = 250;
 
-export const SHORT_DESCRIPTION_SYMBOLS = 140;
-export const SHORT_DESCRIPTION_END_SYMBOL = `\u2026`;
-
-export const MONTH_NAMES = [
-  `January`,
-  `February`,
-  `March`,
-  `April`,
-  `May`,
-  `June`,
-  `July`,
-  `August`,
-  `September`,
-  `October`,
-  `November`,
-  `December`,
-];
-
-export const FILM_COMMENTS_COUNT_MIN = 1;
-export const FILM_COMMENTS_COUNT_MAX = 10;
-
-export const FILM_YEAR_MIN = 1900;
-export const FILM_YEAR_MAX = 2019;
-
-export const FILM_RATING_MIN = 0;
-export const FILM_RATING_MAX = 10;
-
-export const USER_FILM_RATING_MIN = 1; // не менее 1
-export const USER_FILM_RATING_MAX = 9; // не более 9
+export const USER_FILM_RATING = {
+  MIN: 1, // не менее 1
+  MAX: 9 // не более 9
+};
 
 export const YEAR_MILLISECONDS_COUNT = 60 * 60 * 24 * 365 * 1000;
 
@@ -73,3 +47,5 @@ export const MenuItem = {
   FAVORITES: `Favorites`,
   STAT: `Stat`
 };
+
+export const NO_GENERES = [`no ganeres`];

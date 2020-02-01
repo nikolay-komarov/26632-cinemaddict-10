@@ -1,4 +1,5 @@
 import moment from 'moment';
+import {NO_GENERES} from '../utils/const';
 
 export default class Film {
   constructor(film) {
@@ -12,7 +13,7 @@ export default class Film {
       filmMinutes: Number(film[`film_info`][`runtime`]) % 60
     };
     this.duration = Math.floor(film[`film_info`][`runtime`] / 60) + `h ` + (Number(film[`film_info`][`runtime`]) % 60) + `m`;
-    this.genres = film[`film_info`][`genre`];
+    this.genres = (film[`film_info`][`genre`]).length !== 0 ? film[`film_info`][`genre`] : NO_GENERES;
     this.poster = `./` + film[`film_info`][`poster`];
     this.description = film[`film_info`][`description`];
     this.comments = film[`comments`].map((it) => {
@@ -40,10 +41,17 @@ export default class Film {
     };
   }
 
-  toRAW() {
+  converToRAW() {
     return {
       'id': this.id,
-      'comments': this.comments,
+      'comments': this.comments.map((it) => {
+        return ({
+          id: it.id,
+          emotion: it.emoji,
+          comment: it.text,
+          date: it.day
+        });
+      }),
       'film_info': {
         'title': this.title,
         'alternative_title': this.titleOriginal,
@@ -71,7 +79,7 @@ export default class Film {
     };
   }
 
-  filmToServer() {
+  convertFilmToServer() {
     return {
       'id': this.id,
       'comments': this.getCommentsId(),
@@ -102,7 +110,7 @@ export default class Film {
     };
   }
 
-  static commentToServer(comment) {
+  static convertCommentToServer(comment) {
     return {
       id: comment.id,
       author: comment.author,
@@ -113,10 +121,7 @@ export default class Film {
   }
 
   getCommentsId() {
-    if (typeof this.comments[0] === `object`) {
-      return this.comments.map((comment) => comment.id);
-    }
-    return this.comments;
+    return typeof this.comments[0] === `object` ? (this.comments.map((comment) => comment.id)) : this.comments;
   }
 
   static parseFilm(film) {
@@ -128,6 +133,6 @@ export default class Film {
   }
 
   static clone(film) {
-    return new Film(film.toRAW());
+    return new Film(film.converToRAW());
   }
 }

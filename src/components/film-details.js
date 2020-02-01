@@ -1,15 +1,19 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
 import {formatDate} from '../utils/common.js';
-import {VISUALLY_HIDDEN_CSS_CLASS, USER_FILM_RATING_MIN, USER_FILM_RATING_MAX, EMOJI_ICONS} from '../utils/const.js';
+import {VISUALLY_HIDDEN_CSS_CLASS, USER_FILM_RATING, EMOJI_ICONS} from '../utils/const.js';
 import he from 'he';
 
 const COMMMENT_ID_PREFIX = `film-details-comment-id__`;
 const EMOJI_PREFIX = `emoji-`;
 const SHAKE_ANIMATION_TIMEOUT = `2s`;
-const NEW_COMMENT_BORDER_STYLE_DEFAULT = `solid 1px #979797`;
-const NEW_COMMENT_BORDER_STYLE_ON_ERROR = `solid 2px red`;
-const USER_FILM_RATING_STYLE_COLOR_UNCHECKED = `#d8d8d8`;
-const USER_FILM_RATING_STYLE_COLOR_ON_ERROR = `red`;
+const NEW_COMMENT_BORDER_STYLE = {
+  DEFAULT: `solid 1px #979797`,
+  ON_ERROR: `solid 2px red`
+};
+const USER_FILM_RATING_STYLE_COLOR = {
+  UNCHECKED: `#d8d8d8`,
+  ON_ERROR: `red`
+};
 
 const getCommentId = (id) => {
   return id.substring(COMMMENT_ID_PREFIX.length);
@@ -47,9 +51,9 @@ const createGanresListMarkup = (genres) => {
 };
 
 const createUserRaitingMarkup = (userRating) => {
-  userRating = Number(userRating); // для проверки в цикле для усановки checked
+  userRating = Number(userRating); // для проверки в цикле для установки checked
   let userRatingMarkup = ``;
-  for (let i = USER_FILM_RATING_MIN; i <= USER_FILM_RATING_MAX; i++) {
+  for (let i = USER_FILM_RATING.MIN; i <= USER_FILM_RATING.MAX; i++) {
     const isChecked = (i === userRating) ? `checked` : ``;
     userRatingMarkup = userRatingMarkup +
       `<input type="radio" name="score" class="film-details__user-rating-input visually-hidden" value="${i}" id="rating-${i}" ${isChecked}>
@@ -228,7 +232,7 @@ const createFilmDetailsTemplate = (card, options = {}) => {
                   <td class="film-details__cell">${country}</td>
                 </tr>
                 <tr class="film-details__row">
-                  <td class="film-details__term">Genres</td>
+                  <td class="film-details__term">${genres.length === 1 ? `Genre` : `Genres`}</td>
                   <td class="film-details__cell">
                     ${genresListTemplate}
                 </tr>
@@ -348,6 +352,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._deleteButtonClickHandler = handler;
     this.getElement().querySelectorAll(`.film-details__comment-delete`)
       .forEach((it) => it.addEventListener(`click`, (evt) => {
+        evt.preventDefault();
         const commentToDelete = this._card.comments.find((comment) => (comment.id).toString() === (getCommentId(evt.target.closest(`.film-details__comment`).id)).toString());
         handler(commentToDelete, null);
       }));
@@ -421,29 +426,29 @@ export default class FilmDetails extends AbstractSmartComponent {
   onErrorCommentInput() {
     const element = this.getElement();
     const newCommentField = element.querySelector(`.film-details__comment-label`);
-    newCommentField.style.border = NEW_COMMENT_BORDER_STYLE_ON_ERROR;
+    newCommentField.style.border = NEW_COMMENT_BORDER_STYLE.ON_ERROR;
   }
   onErrorUserRating(rating) {
     const element = this.getElement();
     const userRatingLabelElements = element.querySelectorAll(`.film-details__user-rating-label`);
-    for (let ratingElement of userRatingLabelElements) {
-      if (ratingElement.getAttribute(`for`) === `rating-${rating}`) {
-        this.userRatingLabel = ratingElement;
+    userRatingLabelElements.forEach((it) => {
+      if (it.getAttribute(`for`) === `rating-${rating}`) {
+        this.userRatingLabel = it;
       }
-    }
-    this.userRatingLabel.style.backgroundColor = USER_FILM_RATING_STYLE_COLOR_ON_ERROR;
+    });
+    this.userRatingLabel.style.backgroundColor = USER_FILM_RATING_STYLE_COLOR.ON_ERROR;
   }
   resetCommentStyleFromError() {
     const element = this.getElement();
     const newCommentField = element.querySelector(`.film-details__comment-label`);
-    newCommentField.style.border = NEW_COMMENT_BORDER_STYLE_DEFAULT;
+    newCommentField.style.border = NEW_COMMENT_BORDER_STYLE.DEFAULT;
   }
   resetRatingStyleFromError() {
     const element = this.getElement();
     element.querySelectorAll(`.film-details__user-rating-label`)
       .forEach((it) => {
-        if (it.style.backgroundColor === USER_FILM_RATING_STYLE_COLOR_ON_ERROR) {
-          it.style.backgroundColor = USER_FILM_RATING_STYLE_COLOR_UNCHECKED;
+        if (it.style.backgroundColor === USER_FILM_RATING_STYLE_COLOR.ON_ERROR) {
+          it.style.backgroundColor = USER_FILM_RATING_STYLE_COLOR.UNCHECKED;
         }
       });
   }
