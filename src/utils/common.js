@@ -4,6 +4,10 @@ export const formatDate = (date) => {
   return moment(date).format(`DD MMMM YYYY`);
 };
 
+export const formatDateForComment = (date) => {
+  return moment(date).format(`YYYY/MM/DD HH:MM`);
+};
+
 export const getRandomArrayItem = (array) => {
   const randomIndex = getRandomIntegerNumber(0, array.length - 1);
 

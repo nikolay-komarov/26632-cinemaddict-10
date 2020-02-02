@@ -1,5 +1,5 @@
 import AbstractSmartComponent from './abstract-smart-component.js';
-import {formatDate} from '../utils/common.js';
+import {formatDate, formatDateForComment} from '../utils/common.js';
 import {VISUALLY_HIDDEN_CSS_CLASS, USER_FILM_RATING, EMOJI_ICONS} from '../utils/const.js';
 import he from 'he';
 
@@ -21,7 +21,7 @@ const getCommentId = (id) => {
 
 const createCommentMarkup = (comments) => {
   return comments.map((it) => {
-    const commentsDate = formatDate(it.day);
+    const commentsDate = formatDateForComment(it.day);
     return (
       `<li class="film-details__comment"  id="${COMMMENT_ID_PREFIX}${it.id}">
         <span class="film-details__comment-emoji">
@@ -299,6 +299,7 @@ export default class FilmDetails extends AbstractSmartComponent {
     this._markAsWatchedButtonClickHandler = null;
     this._markAsFavoriteButtonClickHandler = null;
     this._userRatingClickHandler = null;
+    this._userRatingUndoClickHandler = null;
     this._deleteButtonClickHandler = null;
     this._addCommentKeyDownHandler = null;
 
@@ -348,13 +349,21 @@ export default class FilmDetails extends AbstractSmartComponent {
       });
   }
 
+  setUserRatingUndoClickHandler(handler) {
+    this._userRatingUndoClickHandler = handler;
+    this.getElement().querySelector(`.film-details__watched-reset`)
+      .addEventListener(`click`, handler);
+  }
+
   setDeleteCommentButtonsClickHandler(handler) {
     this._deleteButtonClickHandler = handler;
     this.getElement().querySelectorAll(`.film-details__comment-delete`)
       .forEach((it) => it.addEventListener(`click`, (evt) => {
         evt.preventDefault();
+        evt.target.textContent = `Deleting...`;
+        evt.target.disabled = true;
         const commentToDelete = this._card.comments.find((comment) => (comment.id).toString() === (getCommentId(evt.target.closest(`.film-details__comment`).id)).toString());
-        handler(commentToDelete, null);
+        handler(commentToDelete, null, evt);
       }));
   }
 

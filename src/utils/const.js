@@ -7,7 +7,8 @@ export const FILM_WATCH_COUNT_MAX = 250;
 
 export const USER_FILM_RATING = {
   MIN: 1, // не менее 1
-  MAX: 9 // не более 9
+  MAX: 9, // не более 9
+  UNDO: 0 // для сброса
 };
 
 export const YEAR_MILLISECONDS_COUNT = 60 * 60 * 24 * 365 * 1000;

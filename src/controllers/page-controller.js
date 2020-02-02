@@ -81,8 +81,8 @@ export default class PageController {
       const ratedFilms = allFilmCards.slice();
       return ratedFilms.sort((a, b) => a.commentsCount > b.commentsCount ? 1 : -1).slice(-1 * FILM_IN_EXTRA_COUNT);
     };
-    const topRatedCards = getTopRatedFilms(this._filmsModel.getFilms());
-    const mostCommentedCards = getMostCommentedFilms(this._filmsModel.getFilms());
+    const topRatedCards = getTopRatedFilms(this._filmsModel.getFilmsAll());
+    const mostCommentedCards = getMostCommentedFilms(this._filmsModel.getFilmsAll());
     // первые две карточки -> Top rated
     if (topRatedCards[FILM_IN_EXTRA_COUNT - 1].rating !== 0) {
       const topRatedList = this._topRatedFilmsComponent.getElement();
@@ -159,6 +159,13 @@ export default class PageController {
       if (isSuccess) {
         filmController.render(updatedFilm);
         this._rerenderExtraCard();
+
+        if (!this._showedFilmControllers.includes(filmController, 0)) { // если наш контроллер в extra-блоке, то обновим карточку в основном блоке
+          const filmControllerInFilmList = this._showedFilmControllers.find((it) => it.getFilmCardId() === filmController.getFilmCardId());
+          if (filmControllerInFilmList) {
+            filmControllerInFilmList.render(updatedFilm);
+          }
+        }
       }
     });
   }

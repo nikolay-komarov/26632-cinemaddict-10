@@ -2,6 +2,7 @@ import FilmCardComponent from '../components/film-card.js';
 import FilmDetailsComponent from '../components/film-details.js';
 import Film from '../models/movie.js';
 import {render, remove, replace, RenderPosition} from '../utils/render.js';
+import {USER_FILM_RATING} from '../utils/const.js';
 
 const Mode = {
   DEFAULT: `default`,
@@ -34,6 +35,7 @@ export default class MovieController {
 
     this._onCommentDataChange = this._onCommentDataChange.bind(this);
     this._onUserRatingChange = this._onUserRatingChange.bind(this);
+    this._onUserRatingUndo = this._onUserRatingUndo.bind(this);
   }
 
   render(filmCard) {
@@ -51,6 +53,10 @@ export default class MovieController {
     } else {
       render(this._container, this._filmCardComponent, RenderPosition.BEFOREEND);
     }
+  }
+
+  getFilmCardId() {
+    return this._filmCard.id;
   }
 
   _createFilmCardComponent(filmCard) {
@@ -83,6 +89,7 @@ export default class MovieController {
     filmDetailsComponent.setAddCommentKeyDownHandler(this._onCommentDataChange);
 
     filmDetailsComponent.setUserRatingClickHandler(this._onUserRatingChange);
+    filmDetailsComponent.setUserRatingUndoClickHandler(this._onUserRatingUndo);
 
     return filmDetailsComponent;
   }
@@ -136,7 +143,7 @@ export default class MovieController {
     }
   }
 
-  _onCommentDataChange(oldComment, newComment) {
+  _onCommentDataChange(oldComment, newComment, evt) {
     this._clearErrorComment();
     const element = this._filmDetailsComponent.getElement().querySelector(`.film-details__comment-input`);
     if (oldComment !== null || !newComment !== null) {
@@ -158,8 +165,12 @@ export default class MovieController {
           .then(() => {
             newFilmCard.comments = newFilmCard.comments.filter((it) => it.id !== oldComment.id);
             newFilmCard.commentsCount = newFilmCard.comments.length;
+          })
+          .catch(() => {
+            evt.target.textContent = `Delete`;
+            evt.target.disabled = false;
           });
-      // } else {
+      // } else { // Д12?
       //   return;
       }
       this._onDataChange(this, this._filmCard, Film.clone(newFilmCard));
@@ -186,6 +197,18 @@ export default class MovieController {
         Array.from(ratingElements).forEach((it) => {
           it.removeAttribute(`disabled`);
         });
+      });
+    this._onDataChange(this, this._filmCard, newFilmCard);
+  }
+
+  _onUserRatingUndo() {
+    this._clearErrorRating();
+    const newFilmCard = Film.clone((this._filmCard));
+    newFilmCard.userDetails.personalRating = USER_FILM_RATING.UNDO;
+    this._api.updateFilm(this._filmCard.id, newFilmCard)
+      .then((updatedFilm) => {
+        this._filmCard = updatedFilm;
+        this.render(updatedFilm);
       });
     this._onDataChange(this, this._filmCard, newFilmCard);
   }

@@ -21,7 +21,7 @@ export default class Films {
   }
   setFilter(filterType) {
     this._activeFilterType = filterType;
-    this._filterChangeHandlers.forEach((handler) => handler()); // ?
+    this._filterChangeHandlers.forEach((handler) => handler());
   }
   updateFilm(id, film) {
     const index = this._films.findIndex((it) => it.id === id);
