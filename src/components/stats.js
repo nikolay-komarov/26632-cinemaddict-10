@@ -170,15 +170,6 @@ const getFilmsDuration = (films) => {
 };
 
 const getTopGenre = (films) => {
-  // код предложенный проверяющим наставником
-  // return films.reduce((prev, item) => {
-  //   const previous = prev && prev.genres;
-  //   const current = item.genres;
-  //   const prevLength = films.filter((v) => v.genres === previous).length;
-  //   const currentLength = films.filter((v) => v.genre === current).length;
-  //   return prevLength >= currentLength ? previous : current;
-  // }, null);
-
   return films.map((it) => it.genres)
     .reduce((newArray, current) => {
       return newArray.concat(current);

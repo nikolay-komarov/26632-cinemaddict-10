@@ -170,8 +170,6 @@ export default class MovieController {
             evt.target.textContent = `Delete`;
             evt.target.disabled = false;
           });
-      // } else { // Д12?
-      //   return;
       }
       this._onDataChange(this, this._filmCard, Film.clone(newFilmCard));
     }
