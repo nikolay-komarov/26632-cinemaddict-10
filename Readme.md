@@ -50,3 +50,4 @@ git clone SSH-адрес_вашего_форка
 
 [travis-image]: https://travis-ci.com/htmlacademy-ecmascript/26632-cinemaddict-10.svg?branch=master
 [travis-url]: https://travis-ci.com/htmlacademy-ecmascript/26632-cinemaddict-10
+.
